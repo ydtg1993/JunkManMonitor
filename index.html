@@ -7,10 +7,15 @@
 <body>
 <textarea id="content"></textarea>
 
+<!--<script src="renderer/index.js"></script>-->
 <script>
+    let fs = require('fs')
+
     let client = require('electron').remote.getGlobal('JunkManClient')
     client.on('data', function(data) {
-        console.log('DATA: ' + data);
+        let message = new Buffer.from(data).toString();
+        console.log(message)
+        console.log(JSON.parse(message))
     });
 </script>
 </body>

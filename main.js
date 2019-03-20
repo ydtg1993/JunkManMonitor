@@ -16,20 +16,18 @@ function createWindow () {
   })
 
   let net = require('net');
-  let HOST = '103.46.128.51';
+  let HOST = '103.46.128.49';
   let PORT = 26841;
 
-  global.JunkManClient = new net.Socket(({
+  const JunkManClient = new net.Socket(({
     readable:true,
     writable:true,
   }));
 
+  global.JunkManClient = JunkManClient;
+
   JunkManClient.connect(PORT, HOST, function() {
     JunkManClient.write(`{"agent":"client","status":"start"}`)
-  });
-
-  JunkManClient.on('data', function(data) {
-    console.log('DATA: ' + data);
   });
 
   // and load the index.html of the app.
