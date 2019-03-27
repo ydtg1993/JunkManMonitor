@@ -16,18 +16,21 @@ address,cite,code,em,th {font-weight:normal; font-style:normal;}
     box-shadow: 8px 2px 8px #888888;
 }
 
-#header .section{
-    height: 45px;
+.section{
     display: table-cell;
     vertical-align: middle;
 }
 
-#header .section-left{
+.section-left{
     text-align: left;
 }
 
-#header .section-right{
+.section-right{
     text-align: right;
+}
+
+#header>.section{
+    height: 45px;
 }
 
 #header img{
@@ -70,9 +73,29 @@ address,cite,code,em,th {font-weight:normal; font-style:normal;}
 }
 
 #foot{
+    display: table;
     width: 100%;
-    height: 25px;
+    height: 30px;
     background: #eeeeee;
 }
+
+#foot .layout{
+    margin-left: 12px;
+}
+
+#foot img{
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+}
+
+#foot>.section{
+    height: 30px;
+}
+
+#foot .helps{
+    margin-right: 12px;
+}
+
 
 
