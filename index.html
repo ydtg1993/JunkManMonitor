@@ -2,21 +2,34 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>JunkMan</title>
+    <link rel="stylesheet" href="app.css">
 </head>
 <body>
-<textarea id="content"></textarea>
 
-<!--<script src="renderer/index.js"></script>-->
+<div id="header"></div>
+
+<div id="main">
+    <div id="catalog"></div>
+    <div id="message-box">
+
+    </div>
+</div>
+
+<div id="foot">
+
+</div>
+
+
 <script>
-    let fs = require('fs')
+    /*let fs = require('fs')
 
     let client = require('electron').remote.getGlobal('JunkManClient')
     client.on('data', function(data) {
         let message = new Buffer.from(data).toString();
         console.log(message)
         console.log(JSON.parse(message))
-    });
+    });*/
 </script>
 </body>
 </html>
