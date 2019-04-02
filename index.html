@@ -4,18 +4,19 @@
     <meta charset="UTF-8">
     <title>JunkMan</title>
     <link rel="stylesheet" href="app.css">
+    <script src="renderer/index.js"></script>
 </head>
 <body>
 
 <div id="header">
     <div class="section section-left">
-        <img class="logo" src="./resource/image/eye.png" />
+        <img class="logo" src="./resource/image/eye.svg" />
     </div>
 
     <div class="section section-right">
-        <a href="" class="tool"><img src="./resource/image/signal.png" /></a>
-        <a href="" class="tool"><img src="./resource/image/set.png" /></a>
-        <a href="" class="tool"><img src="./resource/image/bell.png" /></a>
+        <a href="javascript:void(0)" id="signal" class="tool"><img src="./resource/image/signal.svg" /></a>
+        <a href="javascript:void(0)" class="tool"><img src="./resource/image/set.svg" /></a>
+        <a href="javascript:void(0)" class="tool"><img src="./resource/image/bell.svg" /></a>
     </div>
 </div>
 
@@ -31,6 +32,18 @@
             <div class="card-content">测试点</div>
             <div class="card-operate"></div>
         </div>
+        <div class="card">
+            <div class="card-content">测试点</div>
+            <div class="card-operate"></div>
+        </div>
+        <div class="card">
+            <div class="card-content">测试点</div>
+            <div class="card-operate"></div>
+        </div>
+        <div class="card">
+            <div class="card-content">测试点</div>
+            <div class="card-operate"></div>
+        </div>
     </div>
     <div id="message-box">
 
@@ -40,7 +53,7 @@
 <div id="foot">
     <div class="section section-left">
         <a href="">
-            <img class="layout" src="./resource/image/book-open.png" />
+            <img class="layout" src="./resource/image/book-open.svg" />
         </a>
     </div>
 
@@ -53,14 +66,7 @@
 
 
 <script>
-    /*let fs = require('fs')
-
-    let client = require('electron').remote.getGlobal('JunkManClient')
-    client.on('data', function(data) {
-        let message = new Buffer.from(data).toString();
-        console.log(message)
-        console.log(JSON.parse(message))
-    });*/
+    register();
 </script>
 </body>
 </html>

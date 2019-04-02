@@ -15,21 +15,6 @@ function createWindow () {
     }
   })
 
-  let net = require('net');
-  let HOST = '103.46.128.49';
-  let PORT = 26841;
-
-  const JunkManClient = new net.Socket(({
-    readable:true,
-    writable:true,
-  }));
-
-  global.JunkManClient = JunkManClient;
-
-  JunkManClient.connect(PORT, HOST, function() {
-    JunkManClient.write(`{"agent":"client","status":"start"}`)
-  });
-
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
 
@@ -42,7 +27,18 @@ function createWindow () {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null
-    JunkManClient.write(`{"agent":"client","status":"end"}`)
+    socketWorker.close();
+  })
+
+  const { ipcMain } = require('electron')
+  ipcMain.on('socket-event', (event, arg) => {
+    console.log(arg) // prints "ping"
+    if(arg == 'connect'){
+      socketWorker.connect();
+      event.sender.send('asynchronous-reply', 'pong')
+    }else if(arg == 'disconnect'){
+      socketWorker.close();
+    }
   })
 }
 
@@ -70,3 +66,27 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+let socketWorker = {
+  connect:function () {
+    let net = require('net');
+    let HOST = '103.46.128.49';
+    let PORT = 26841;
+
+    const JunkManClient = new net.Socket(({
+      readable:true,
+      writable:true,
+    }));
+
+    global.JunkManClient = JunkManClient;
+
+    JunkManClient.connect(PORT, HOST, function() {
+      JunkManClient.write(`{"agent":"client","status":"start"}`)
+    });
+  },
+  close:function () {
+    if(typeof JunkManClient != null) {
+      JunkManClient.write(`{"agent":"client","status":"end"}`);
+      global.JunkManClient = null;
+    }
+  }
+}
