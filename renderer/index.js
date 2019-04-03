@@ -2,37 +2,70 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 let fs = require('fs');
-const { ipcRenderer } = require('electron');
+const {ipcRenderer} = require('electron');
 
-let register = function(){
-    tools.init();
+let register = function () {
+    buttonRegister();
 };
 
-let socketListener = {
-   init:function () {
-       let client = require('electron').remote.getGlobal('JunkManClient');
-       client.on('data', function(data) {
-           let message = new Buffer.from(data).toString();
-           console.log(message)
-           console.log(JSON.parse(message))
-       });
-   }
+let tmpData = {
+    maximize:false,
+
 };
 
-let tools = {
-   init:function () {
-      let signalDom = document.getElementById('signal');
-      signalDom.addEventListener('click',eventHandler.signal.connect)
-   },
+let socketListener = function () {
+    let client = require('electron').remote.getGlobal('JunkManClient');
+    if (client != null) {
+        client.on('data', function (data) {
+            let message = new Buffer.from(data).toString();
+            console.log(message);
+            console.log(JSON.parse(message))
+        });
+    }
+};
+
+let buttonRegister = function () {
+    //window tool
+    let maximize = document.getElementById('maximize');
+    maximize.addEventListener('click', eventHandler.maximize.trigger);
+
+    document.getElementById('minimize').addEventListener('click',function () {
+        ipcRenderer.send('window-event', 'minimize');
+    });
+
+    document.getElementById('shutdown').addEventListener('click', function () {
+        ipcRenderer.send('window-event', 'close');
+    });
+
+    //navigation tool
+    let signalDom = document.getElementById('signal');
+    signalDom.addEventListener('click', eventHandler.signal.connect)
 };
 
 let eventHandler = {
-    signal: {
-        'connect': function () {
-            ipcRenderer.send('socket-event', 'connect');
-            socketListener.init();
+    maximize:{
+        trigger:function () {
+            if(!tmpData.maximize){
+                eventHandler.maximize.max()
+            }else {
+                eventHandler.maximize.unmax()
+            }
         },
-        'disconnect': function () {
+        max:function () {
+            ipcRenderer.send('window-event', 'maximize');
+            tmpData.maximize = true;
+        },
+        unmax:function () {
+            ipcRenderer.send('window-event', 'unmaximize');
+            tmpData.maximize = false;
+        }
+    },
+    signal: {
+        connect: function () {
+            ipcRenderer.send('socket-event', 'connect');
+            socketListener();
+        },
+        disconnect: function () {
             ipcRenderer.send('socket-event', 'disconnect');
         }
     },

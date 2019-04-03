@@ -3,12 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>JunkMan</title>
-    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="renderer/app.css">
     <script src="renderer/index.js"></script>
 </head>
 <body>
+<div id="top">
+    <div class="section section-right">
+        <a href="javascript:void(0)" id="minimize" class="button"><img src="./resource/image/minimize.svg" /></a>
+        <a href="javascript:void(0)" id="maximize" class="button"><img src="./resource/image/maximize.svg" /></a>
+        <a href="javascript:void(0)" id="shutdown" class="button"><img src="./resource/image/shutdown.svg" /></a>
+    </div>
+</div>
 
-<div style="-webkit-app-region:drag"></div>
 <div id="header">
     <div class="section section-left">
         <img class="logo" src="./resource/image/eye.svg" />
@@ -19,7 +25,6 @@
         <a href="javascript:void(0)" class="tool"><img src="./resource/image/set.svg" /></a>
         <a href="javascript:void(0)" class="tool"><img src="./resource/image/bell.svg" /></a>
         <a href="javascript:void(0)" class="tool"><img src="./resource/image/help.png" /></a>
-        <a href="javascript:void(0)" class="tool"><img src="./resource/image/shutdown.svg" /></a>
     </div>
 </div>
 
