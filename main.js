@@ -14,7 +14,7 @@ function createWindow() {
         width: 1200,
         height: 800,
         show: false,
-        frame: false
+        //frame: false
     });
 
     // and load the index.html of the app.
@@ -85,26 +85,30 @@ app.on('activate', function () {
 let socketWorker = {
     connect: function () {
         let net = require('net');
-        let HOST = '47.75.133.2141';
+        let HOST = '47.75.133.214';
         let PORT = 26841;
 
         global.JunkManClient = new net.Socket(({
             readable: true,
             writable: true,
         }));
-
-        JunkManClient.setTimeout(3000);
-        JunkManClient.on('error', () => {
-            global.JunkManClient = null;
-            electron.dialog.showMessageBox({
-                title: 'connect error',
-                type: 'error',
-                message: 'please check your connection config!'
-            })
-        });
+        JunkManClient.setKeepAlive(true);
 
         JunkManClient.connect(PORT, HOST, function () {
-            JunkManClient.write(`{"agent":"client","status":"start"}`)
+            JunkManClient.write(`{"agent":"client","status":"start"}`);
+            let palpitation = setInterval(() => {
+                JunkManClient.write(`{"agent":"client","status":"palpitation"}`);
+            }, 3000);
+
+            JunkManClient.on('error', (error) => {
+                clearInterval(palpitation);
+                global.JunkManClient = null;
+                electron.dialog.showMessageBox({
+                    title: 'connection error',
+                    type: 'error',
+                    message: "can't connect the server. please check your config!"
+                })
+            })
         });
     },
     close: function () {
