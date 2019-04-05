@@ -1,16 +1,19 @@
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
-let fs = require('fs');
+const FS = require('fs');
 const {ipcRenderer} = require('electron');
+const SVG = require('svg.js');
+
 
 let register = function () {
     buttonRegister();
+    animationRegister();
 };
 
 let tmpData = {
     maximize:false,
-
+    signal:0,//0:disconnect 1:connecting 2:connected
 };
 
 let socketListener = function () {
@@ -38,9 +41,25 @@ let buttonRegister = function () {
     });
 
     //navigation tool
-    let signalDom = document.getElementById('signal');
-    signalDom.addEventListener('click', eventHandler.signal.connect)
+    document.getElementById('signal').addEventListener('click', eventHandler.signal.trigger);
 };
+
+let animationRegister = function(){
+    let setAnime = SVG('set');
+    setAnime.mouseover(function() { this.animate(5000).rotate(360, 0, 0).loop(); });
+    setAnime.mouseout(function() { this.stop() })
+
+    let bellAnime = SVG('bell');
+    bellAnime.mouseover(function() {
+        this.animate(100).rotate(25, 0, 0)
+            .animate(100).rotate(0, 0, 0)
+            .animate(100).rotate(-25, 0, 0)
+            .animate(100).rotate(0, 0, 0);
+    });
+    bellAnime.mouseout(function() {
+        this.animate(100).rotate(0, 0, 0);
+    })
+}
 
 let eventHandler = {
     maximize:{
@@ -61,6 +80,15 @@ let eventHandler = {
         }
     },
     signal: {
+        trigger:function () {
+            if(tmpData.signal == 0){
+                eventHandler.signal.connect();
+            }else if(tmpData.signal == 1){
+                //connecting
+            }else {
+                eventHandler.signal.disconnect();
+            }
+        },
         connect: function () {
             ipcRenderer.send('socket-event', 'connect');
             socketListener();
