@@ -88,17 +88,15 @@ let socketWorker = {
         let HOST = '47.75.133.214';
         let PORT = 26841;
 
-        global.JunkManClient = new net.Socket(({
-            readable: true,
-            writable: true,
-        }));
+        global.JunkManClient = new net.Socket();
         JunkManClient.setKeepAlive(true);
+        JunkManClient.setEncoding("utf8");
 
         JunkManClient.connect(PORT, HOST, function () {
             JunkManClient.write(`{"agent":"client","status":"start"}`);
             let palpitation = setInterval(() => {
                 JunkManClient.write(`{"agent":"client","status":"palpitation"}`);
-            }, 3000);
+            }, 5000);
 
             JunkManClient.on('error', (error) => {
                 clearInterval(palpitation);
@@ -108,7 +106,12 @@ let socketWorker = {
                     type: 'error',
                     message: "can't connect the server. please check your config!"
                 })
-            })
+            });
+
+            JunkManClient.on('data', function (data) {
+                let message = new Buffer.from(data).toString('utf8');
+                packageWorker.run(message);
+            });
         });
     },
     close: function () {
@@ -118,3 +121,38 @@ let socketWorker = {
         }
     }
 };
+
+let packageWorker = {
+    data:"",
+    flag:0,
+    run:function (string) {
+        if(isJSON(string)){
+            mainWindow.webContents.send('stream', string)
+            return;
+        }
+        packageWorker.data+=string;
+        packageWorker.flag+= 1;
+
+        if(packageWorker.flag > 1){
+            if(!isJSON(packageWorker.data)){
+                packageWorker.reset();
+                return;
+            }
+            mainWindow.webContents.send('stream', packageWorker.data)
+            packageWorker.reset();
+        }
+    },
+    reset:function () {
+        packageWorker.data = "";
+        packageWorker.flag = 0;
+    }
+};
+
+function isJSON(str) {
+    try {
+        JSON.parse(str);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}

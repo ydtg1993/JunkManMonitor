@@ -7,6 +7,10 @@ const SVG = require('svg.js');
 
 
 let register = function () {
+    ipcRenderer.on('stream', (event, arg) => {
+        let data = JSON.parse(arg);
+        console.log(data)
+    });
     buttonRegister();
     animationRegister();
 };
@@ -14,17 +18,6 @@ let register = function () {
 let tmpData = {
     maximize:false,
     signal:0,//0:disconnect 1:connecting 2:connected
-};
-
-let socketListener = function () {
-    let client = require('electron').remote.getGlobal('JunkManClient');
-    if (client != null) {
-        client.on('data', function (data) {
-            let message = new Buffer.from(data).toString();
-            console.log(message);
-            console.log(JSON.parse(message))
-        });
-    }
 };
 
 let buttonRegister = function () {
@@ -91,7 +84,6 @@ let eventHandler = {
         },
         connect: function () {
             ipcRenderer.send('socket-event', 'connect');
-            socketListener();
         },
         disconnect: function () {
             ipcRenderer.send('socket-event', 'disconnect');
