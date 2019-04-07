@@ -12,9 +12,10 @@ function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
         width: 1200,
-        height: 800,
+        height: 750,
         show: false,
-        //frame: false
+        resizable:false,
+        frame: false
     });
 
     // and load the index.html of the app.
@@ -129,7 +130,7 @@ let packageWorker = {
 
         let startSign = buffer.lastIndexOf(2);
         let endSign = buffer.lastIndexOf(3);
-       
+
         if (endSign >= 0 && startSign >= 0) {
             JunkManClient.pause();
             message = buffer.slice(startSign + 1, endSign - startSign).toString();

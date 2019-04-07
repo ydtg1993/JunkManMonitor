@@ -1,5 +1,5 @@
 html {height: 100%;}
-body {margin:0; padding:0;height: 100%; font:12px AncientWar;background:#ffffff;overflow: hidden}
+body {margin:0; padding:0;height: 100%; font:12px AncientWar;background:#141518;overflow:hidden}
 div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,blockquote,p{padding:0; margin:0;}
 table,td,tr,th{font-size:12px;}
 li{list-style-type:none;}
@@ -7,6 +7,10 @@ img{vertical-align:top;border:0;}
 ol,ul {list-style:none;}
 h1,h2,h3,h4,h5,h6{font-size:12px; font-weight:normal;}
 address,cite,code,em,th {font-weight:normal; font-style:normal;}
+
+button,a {
+    -webkit-app-region: no-drag;
+}
 
 #top{
     display: table;
@@ -26,7 +30,7 @@ address,cite,code,em,th {font-weight:normal; font-style:normal;}
 #header{
     display: table;
     width: 100%;
-    height: 60px;
+    height: 50px;
     background-image: linear-gradient(to left bottom, #0d81ba, #0f4172);
     box-shadow: 8px 2px 8px #888888;
 }
@@ -70,7 +74,7 @@ address,cite,code,em,th {font-weight:normal; font-style:normal;}
 
 #main{
     display: table;
-    height: calc(100% - 80px);
+    height: calc(100% - 70px);
 }
 
 #catalog{
@@ -80,7 +84,7 @@ address,cite,code,em,th {font-weight:normal; font-style:normal;}
     max-width: 300px;
     height: 100%;
     box-shadow: 2px 2px 10px #888888;
-    background-image: linear-gradient(to left bottom, #0f587d, #0d355c);
+    background: #141518;
 }
 
 #message-box{
@@ -89,15 +93,12 @@ address,cite,code,em,th {font-weight:normal; font-style:normal;}
     width: 100%;
     height: 100%;
     background-size: cover;
-    padding: 15px 15px 0 15px;
 }
 
 #content{
     display: table;
     width: 100%;
-    height: 100%;
-    background: #1b2b3b;
-    border-radius: 7px;
+    height: calc(100% - 20px);
 }
 
 #content .tr{
@@ -108,13 +109,9 @@ address,cite,code,em,th {font-weight:normal; font-style:normal;}
     display: table-cell;
 }
 
-#content .top{
-    height: 30px;
-}
-
-#content .top_panel{
-    border-radius: 7px;
-    background-image: linear-gradient(to left bottom, #0d81ba, #0f4172)
+#message-box .bottom_panel{
+    height: 21px;
+    background-image: linear-gradient(to left bottom, #0d81ba, #0f4172);
 }
 
 #line_content{
@@ -124,14 +121,15 @@ address,cite,code,em,th {font-weight:normal; font-style:normal;}
 
 #file_content{
     text-align: left;
-    width: 60%;
-    border-right: grey 1px solid;
+    width: 70%;
+    background: #242c3f;
     cursor: text;
 }
 
 #var_content{
     text-align: left;
-    width: 35%;
+    width: 25%;
+    background: #1e2330;
 }
 
 #search-box{
