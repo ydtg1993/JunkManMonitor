@@ -47,7 +47,6 @@ function createWindow() {
     IpcMain.on('socket-event', (event, arg) => {
         if (arg == 'connect') {
             socketWorker.connect();
-            event.sender.send('asynchronous-reply', 'pong')
         } else if (arg == 'disconnect') {
             socketWorker.close();
         }
@@ -85,7 +84,7 @@ app.on('activate', function () {
 let socketWorker = {
     connect: function () {
         let net = require('net');
-        let HOST = '47.75.133.214';
+        let HOST = '103.46.128.49';
         let PORT = 26841;
 
         global.JunkManClient = new net.Socket();
@@ -109,8 +108,7 @@ let socketWorker = {
             });
 
             JunkManClient.on('data', function (data) {
-                let message = new Buffer.from(data).toString('utf8');
-                packageWorker.run(message);
+                packageWorker.run(data);
             });
         });
     },
@@ -123,26 +121,52 @@ let socketWorker = {
 };
 
 let packageWorker = {
-    data:"",
-    flag:0,
-    run:function (string) {
-        if(isJSON(string)){
-            mainWindow.webContents.send('stream', string)
-            return;
-        }
-        packageWorker.data+=string;
-        packageWorker.flag+= 1;
+    data: "",
+    flag: 0,
+    run: function (data) {
+        let buffer = Buffer.from(data);
+        let message;
 
-        if(packageWorker.flag > 1){
-            if(!isJSON(packageWorker.data)){
-                packageWorker.reset();
-                return;
+        let startSign = buffer.lastIndexOf(2);
+        let endSign = buffer.lastIndexOf(3);
+       
+        if (endSign >= 0 && startSign >= 0) {
+            JunkManClient.pause();
+            message = buffer.slice(startSign + 1, endSign - startSign).toString();
+            if(isJSON(message)){
+                mainWindow.webContents.send('stream', message)
             }
-            mainWindow.webContents.send('stream', packageWorker.data)
-            packageWorker.reset();
+            JunkManClient.resume();
+            return
+        } else if (endSign >= 0 && startSign < 0) {
+            //end
+            message = buffer.slice(0, endSign).toString();
+            packageWorker.data += message;
+            JunkManClient.pause();
+            if(isJSON(packageWorker.data)){
+                mainWindow.webContents.send('stream', packageWorker.data)
+                packageWorker.reset();
+                JunkManClient.resume();
+                return
+            }else if(packageWorker.flag > 5){
+                console.log('a lot of package error');
+                packageWorker.reset()
+            }
+            JunkManClient.resume();
+            return
+        } else if (startSign >= 0 && endSign < 0) {
+            //start
+            message = buffer.slice(startSign + 1).toString();
+            packageWorker.data += message;
+            packageWorker.flag++;
+            return
+        } else {
+            //ing
+            packageWorker.data += data;
+            packageWorker.flag++;
         }
     },
-    reset:function () {
+    reset: function () {
         packageWorker.data = "";
         packageWorker.flag = 0;
     }
@@ -153,6 +177,7 @@ function isJSON(str) {
         JSON.parse(str);
         return true;
     } catch (e) {
+        console.log(e)
         return false;
     }
 }
