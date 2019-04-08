@@ -1,6 +1,7 @@
 {
   "host": "",
   "port": "",
+  "IPv": 4,
   "auto-connect": false,
   "palpitation":3000
 }

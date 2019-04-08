@@ -14,12 +14,13 @@ function createWindow() {
         width: 1200,
         height: 750,
         show: false,
-        resizable:false,
-        frame: false
+        resizable: false,
+        //frame: false
     });
 
     // and load the index.html of the app.
     mainWindow.loadFile('index.html');
+    eventListen();
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
@@ -31,30 +32,6 @@ function createWindow() {
         // when you should delete the corresponding element.
         mainWindow = null;
         socketWorker.close();
-    });
-
-    IpcMain.on('window-event', (event, arg) => {
-        if (arg == 'maximize') {
-            mainWindow.maximize();
-        } else if (arg == 'unmaximize') {
-            mainWindow.unmaximize();
-        } else if (arg == 'minimize') {
-            mainWindow.minimize();
-        } else if (arg == 'close') {
-            mainWindow.close();
-        }
-    });
-
-    IpcMain.on('socket-event', (event, arg) => {
-        if (arg == 'connect') {
-            socketWorker.connect();
-        } else if (arg == 'disconnect') {
-            socketWorker.close();
-        }
-    });
-
-    mainWindow.on('ready-to-show', () => {
-        mainWindow.show();
     });
 }
 
@@ -80,9 +57,36 @@ app.on('activate', function () {
     }
 });
 
+let eventListen = function () {
+    IpcMain.on('window-event', (event, arg) => {
+        if (arg == 'maximize') {
+            mainWindow.maximize();
+        } else if (arg == 'unmaximize') {
+            mainWindow.unmaximize();
+        } else if (arg == 'minimize') {
+            mainWindow.minimize();
+        } else if (arg == 'close') {
+            mainWindow.close();
+        }
+    });
+
+    IpcMain.on('socket-event', (event, arg) => {
+        if (arg == 'connect') {
+            socketWorker.connect();
+        } else if (arg == 'disconnect') {
+            socketWorker.close();
+        }
+    });
+
+    mainWindow.on('ready-to-show', () => {
+        mainWindow.show();
+    });
+};
+
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 let socketWorker = {
+    palpitation: null,
     connect: function () {
         let net = require('net');
         let HOST = '103.46.128.49';
@@ -92,28 +96,36 @@ let socketWorker = {
         JunkManClient.setKeepAlive(true);
         JunkManClient.setEncoding("utf8");
 
-        JunkManClient.connect(PORT, HOST, function () {
+        JunkManClient.connect(PORT, HOST)
+
+        JunkManClient.on('connect', function () {
             JunkManClient.write(`{"agent":"client","status":"start"}`);
-            let palpitation = setInterval(() => {
+            socketWorker.palpitation = setInterval(() => {
                 JunkManClient.write(`{"agent":"client","status":"palpitation"}`);
             }, 5000);
+        });
 
-            JunkManClient.on('error', (error) => {
-                clearInterval(palpitation);
-                global.JunkManClient = null;
-                electron.dialog.showMessageBox({
-                    title: 'connection error',
-                    type: 'error',
-                    message: "can't connect the server. please check your config!"
-                })
-            });
+        JunkManClient.on('error', (error) => {
+            clearInterval(socketWorker.palpitation);
+            mainWindow.webContents.send('stream', 'disconnect');
+            global.JunkManClient = null;
+            electron.dialog.showMessageBox({
+                title: 'connection error',
+                type: 'error',
+                message: "can't connect the server. please check your config!"
+            })
+        });
 
-            JunkManClient.on('data', function (data) {
-                packageWorker.run(data);
-            });
+        JunkManClient.on('data', function (data) {
+            if(data == 'SUCCESS') {
+                mainWindow.webContents.send('stream', 'connected');
+                return
+            }
+            packageWorker.run(data);
         });
     },
     close: function () {
+        clearInterval(socketWorker.palpitation);
         if (global.JunkManClient != null) {
             JunkManClient.end(`{"agent":"client","status":"end"}`);
             global.JunkManClient = null;
@@ -134,7 +146,7 @@ let packageWorker = {
         if (endSign >= 0 && startSign >= 0) {
             JunkManClient.pause();
             message = buffer.slice(startSign + 1, endSign - startSign).toString();
-            if(isJSON(message)){
+            if (isJSON(message)) {
                 mainWindow.webContents.send('stream', message)
             }
             JunkManClient.resume();
@@ -144,12 +156,12 @@ let packageWorker = {
             message = buffer.slice(0, endSign).toString();
             packageWorker.data += message;
             JunkManClient.pause();
-            if(isJSON(packageWorker.data)){
+            if (isJSON(packageWorker.data)) {
                 mainWindow.webContents.send('stream', packageWorker.data)
                 packageWorker.reset();
                 JunkManClient.resume();
                 return
-            }else if(packageWorker.flag > 5){
+            } else if (packageWorker.flag > 5) {
                 console.log('a lot of package error');
                 packageWorker.reset()
             }
