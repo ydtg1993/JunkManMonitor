@@ -1,5 +1,5 @@
 html {height: 100%;}
-body {margin:0; padding:0;height: 100%; font:12px AncientWar;background:#141518;}
+body {margin:0; padding:0;height: 100%; font:12px AncientWar;overflow-y: hidden}
 div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,blockquote,p{padding:0; margin:0;}
 table,td,tr,th{font-size:12px;}
 li{list-style-type:none;}
@@ -7,17 +7,32 @@ img{vertical-align:top;border:0;}
 ol,ul {list-style:none;}
 h1,h2,h3,h4,h5,h6{font-size:12px; font-weight:normal;}
 address,cite,code,em,th {font-weight:normal; font-style:normal;}
+.scroll::-webkit-scrollbar {/*滚动条整体样式*/
+    width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
+}
+.scroll::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: #ededed;
+}
+.scroll::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    background: transparent;
+}
 
 button,a {
     -webkit-app-region: no-drag;
 }
 
+/*top*/
 #top{
     display: table;
     width: 100%;
     height: 20px;
     background: #f5f5f5;
 }
+
 #top .button{
     margin-right: 14px;
 }
@@ -48,6 +63,7 @@ button,a {
     text-align: right;
 }
 
+/*header*/
 #header>.section{
     height: 45px;
 }
@@ -74,72 +90,18 @@ button,a {
 
 /*main*/
 #main{
-    display: table;
+    width:100%;
+    display: grid;
     height: calc(100% - 90px);
+    grid-template-columns: 250px auto;
 }
 
 #catalog{
-    display: table-cell;
     text-align: left;
-    min-width: 250px;
-    max-width: 300px;
-    height: 100%;
     box-shadow: 2px 2px 10px #888888;
     background: #1a0544;
-    border-right: 1px solid #dac7c7;
+    overflow-y: auto;
 }
-
-#message-box{
-    display: table-cell;
-    text-align: right;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-}
-
-#content{
-    display: table;
-    width: 100%;
-    height: 100%;
-}
-
-#content .tr{
-    display: table-row;
-}
-
-#content .td{
-    display: table-cell;
-}
-
-#line_content{
-    text-align: right;
-    background: #f9f9f9;
-    border-right: 1px solid #dac7c7;
-}
-
-#file_content{
-    text-align: left;
-    width: 70%;
-    background-color: #f3f2f3;
-    background-image: url("./../resource/image/background2.svg");
-    background-position: center center;
-    background-repeat: no-repeat;
-    cursor: text;
-}
-
-#var_content{
-    text-align: left;
-    width: 25%;
-    background: #f9f9f9;
-    border-left: 1px solid #dac7c7;
-}
-
-/*bottom*/
-#bottom{
-    height: 21px;
-    background-image: linear-gradient(to left bottom, #0d81ba, #0f4172);
-}
-
 
 /*search*/
 #search-box{
@@ -164,16 +126,65 @@ button,a {
     width: 73%;
 }
 
-.svg-icon{
-    fill: #4691f6;
-    width: 25px;
-    height: 25px;
-}
-
 #search-box .svg-icon{
     position: absolute;
     left: 20px;
     top: 14px;
+}
+
+/*catalog-list*/
+#catalog-list{
+    height: calc(100% - 52px);
+    overflow-y: auto;
+}
+
+#detail{
+    text-align: right;
+    width: 100%;
+    background-size: cover;
+    overflow-y: auto;
+}
+#detail::-webkit-scrollbar-thumb{
+    background: #36343a;
+}
+#content{
+    display: grid;
+    grid-template-columns: 5% auto 25%;
+    width: 100%;
+    height: 100%;
+}
+
+#line_content{
+    text-align: right;
+    background: #f9f9f9;
+    border-right: 1px solid #dac7c7;
+}
+
+#file_content{
+    text-align: left;
+    background-color: #f3f2f3;
+    background-position: center center;
+    background-repeat: no-repeat;
+    cursor: text;
+}
+
+#var_content{
+    text-align: left;
+    background: #f9f9f9;
+    border-left: 1px solid #dac7c7;
+}
+
+/*bottom*/
+#bottom{
+    height: 20px;
+    width: 100%;
+    background-image: linear-gradient(to left bottom, #0d81ba, #0f4172);
+}
+
+.svg-icon{
+    fill: #4691f6;
+    width: 25px;
+    height: 25px;
 }
 
 .card{
