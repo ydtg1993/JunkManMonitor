@@ -70,7 +70,7 @@
 }
 
 .icon-develop .gear-b {
-    animation: rotate-reverse 6s;
+    animation: rotate-reverse 6s infinite;
 }
 .icon-develop .gear-s {
     animation: rotate 12s linear infinite;

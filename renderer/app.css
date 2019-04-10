@@ -98,7 +98,11 @@ button,a {
 
 #catalog{
     text-align: left;
-    background: #1a0544;
+    background-color: #1a0544;
+    background-image: url("./../resource/image/background4.svg");
+    background-size:70px;
+    background-position:center;
+    background-repeat: no-repeat;
     overflow-y: auto;
 }
 
@@ -155,14 +159,14 @@ button,a {
 
 #line_content{
     text-align: right;
-    background: #f9f9f9;
+    background: #f3f2f3;
     border-left: 1px solid #dac7c7;
     border-right: 1px solid #dac7c7;
 }
 
 #file_content{
     text-align: left;
-    background-color: #f3f2f3;
+    background-color: #f9f9f9;
     background-position: center center;
     background-repeat: no-repeat;
     cursor: text;
@@ -170,7 +174,7 @@ button,a {
 
 #var_content{
     text-align: left;
-    background: #f9f9f9;
+    background: #f3f2f3;
     border-left: 1px solid #dac7c7;
 }
 

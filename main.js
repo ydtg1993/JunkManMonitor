@@ -15,7 +15,7 @@ function createWindow() {
         height: 750,
         show: false,
         resizable: false,
-        //frame: false
+        frame: false
     });
 
     // and load the index.html of the app.
@@ -96,7 +96,7 @@ let socketWorker = {
         JunkManClient.setKeepAlive(true);
         JunkManClient.setEncoding("utf8");
 
-        JunkManClient.connect(PORT, HOST)
+        JunkManClient.connect(PORT, HOST);
 
         JunkManClient.on('connect', function () {
             JunkManClient.write(`{"agent":"client","status":"start"}`);
