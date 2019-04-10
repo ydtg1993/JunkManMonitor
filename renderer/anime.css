@@ -1,0 +1,535 @@
+
+.icon-wrap {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 0px;
+}
+.icon-wrap svg {
+    width: calc(25% - 20px);
+    padding: 10px;
+}
+.icon-wrap-services {
+    margin-bottom: 50px;
+}
+@media (max-width: 740px) {
+    .icon-wrap svg {
+        width: calc(50% - 20px);
+    }
+}
+@media (max-width: 500px) {
+    .icon-wrap svg {
+        width: calc(100% - 20px);
+    }
+}
+
+.icon-design .anchor-part {
+    animation: move 2s linear infinite;
+}
+.icon-design .anchor-part--2 {
+    animation: move2 2s linear infinite;
+}
+.icon-design .pen-part {
+    transform-origin: 140px 180px;
+    animation: bounce2 2s ease-in-out infinite;
+}
+.icon-design .ruler-part {
+    transform-origin: 140px 180px;
+    animation: bounce 1s ease-in-out infinite;
+}
+.icon-design .circle-part {
+    transform-origin: 139.8px 167.8px;
+    animation: rotate 4s linear infinite;
+}
+.icon-design .cursor-part {
+    animation: bounceBFt2 2s ease-in-out infinite;
+}
+@keyframes move {
+    0%, 100% {
+        transform: translate(1px, 1px);
+    }
+    50% {
+        transform: translate(-1px, -1px);
+    }
+}
+@keyframes move2 {
+    0%, 100% {
+        transform: translate(-1px, -1px);
+    }
+    50% {
+        transform: translate(1px, 1px);
+    }
+}
+.icon-design .hover {
+    animation-play-state: paused;
+}
+.icon-design:hover .hover {
+    animation-play-state: running;
+}
+
+.icon-develop .gear-b {
+    animation: rotate-reverse 6s;
+}
+.icon-develop .gear-s {
+    animation: rotate 12s linear infinite;
+}
+.icon-develop #XMLID_87_,
+.icon-develop #XMLID_85_,
+.icon-develop #XMLID_83_ {
+    animation: twinkle 3s ease-in-out infinite;
+}
+.icon-develop #XMLID_85_ {
+    animation-delay: 0.4s;
+}
+.icon-develop #XMLID_83_ {
+    animation-delay: 0.6s;
+}
+.icon-develop .line-t,
+.icon-develop .line-m,
+.icon-develop .line-b {
+    animation: shrink 1.8s ease-in-out infinite;
+}
+.icon-develop .line-m {
+    animation-delay: 0.3s;
+}
+.icon-develop .line-b {
+    animation-delay: 0.6s;
+}
+.icon-develop .code-letter_o {
+    animation: typingO 3s linear infinite;
+}
+.icon-develop .code-letter_d {
+    animation: typingD 3s linear infinite;
+}
+.icon-develop .code-letter_e {
+    animation: typingE 3s linear infinite;
+}
+@keyframes typingE {
+    20.1%, 80% {
+        fill: transparent;
+    }
+    20%, 80.1% {
+        fill: #fff;
+    }
+}
+@keyframes typingD {
+    30.1%, 70% {
+        fill: transparent;
+    }
+    30%, 70.1% {
+        fill: #fff;
+    }
+}
+@keyframes typingO {
+    40.1%, 60% {
+        fill: transparent;
+    }
+    40%, 60.1% {
+        fill: #fff;
+    }
+}
+.icon-develop{
+    display: block;
+    margin: 0 auto;
+    width: 80%;
+    animation-play-state: running !important;
+}
+/*.icon-develop .hover {
+    animation-play-state: paused !important;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+.icon-develop:hover .hover {
+    animation-play-state: running !important;
+}*/
+
+.icon-support .gear-s,
+.icon-support .gear-m {
+    animation: rotate;
+    animation-duration: 6s;
+}
+.icon-support .gear-b {
+    animation: rotate-reverse 6s;
+}
+.icon-support .clock {
+    transform-origin: 223.6px 132.8px;
+    animation: rotate 12s linear infinite;
+}
+.icon-support .hover {
+    animation-play-state: paused;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+.icon-support:hover .hover {
+    animation-play-state: running;
+}
+
+.icon-eComm .overlay {
+    transform: translate(82px, -214px);
+}
+.icon-eComm .bubble-b {
+    animation: bubble-b 3.4s linear infinite;
+}
+.icon-eComm .bubble-m {
+    animation: bubble-m 3.4s linear infinite;
+}
+.icon-eComm .bubble-t {
+    animation: bubble-t 3.4s linear infinite;
+}
+.icon-eComm .hand,
+.icon-eComm .bag-f,
+.icon-eComm .bag-b,
+.icon-eComm .bag-f--tag {
+    transform-origin: 320px 200px;
+    animation: bounce2 1.6s ease-in-out infinite;
+}
+.icon-eComm .bag-bb {
+    animation-delay: 0.4s;
+}
+.icon-eComm .bag-f--tag,
+.icon-eComm .bag-bb {
+    transform-origin: 200px 190px;
+    animation: bounce 1.6s ease-in-out infinite;
+}
+.icon-eComm .bag-b {
+    transform-origin: 160px 160px;
+    animation: bounce 1.6s ease-in-out infinite;
+}
+.icon-eComm .credit-card circle:nth-of-type(1) {
+    animation: shift 6s ease-in-out infinite;
+}
+.icon-eComm .credit-card circle:nth-of-type(2) {
+    animation: shift2 6s ease-in-out infinite;
+}
+@keyframes shift {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    25%, 75% {
+        opacity: 0.7;
+    }
+    50% {
+        transform: translateX(10px);
+        opacity: 1;
+    }
+}
+@keyframes shift2 {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    25%, 75% {
+        opacity: 0.7;
+    }
+    50% {
+        transform: translateX(-10px);
+        opacity: 1;
+    }
+}
+.icon-eComm .hover {
+    animation-play-state: paused;
+}
+.icon-eComm:hover .hover {
+    animation-play-state: running;
+}
+
+.icon-mobApps .gear {
+    animation: rotate 30s linear infinite;
+}
+.icon-mobApps .line-t,
+.icon-mobApps .line-m,
+.icon-mobApps .line-b {
+    animation: shrink 2.2s ease-in-out infinite;
+}
+.icon-mobApps .play-btn polygon {
+    animation: twinkle 3s linear infinite;
+}
+.icon-mobApps .line-m {
+    animation-delay: 0.3s;
+}
+.icon-mobApps .line-b {
+    animation-delay: 0.6s;
+}
+.icon-mobApps .ruler {
+    transform-origin: 300px 200px;
+    animation: bounceBFt2 2s ease-in-out infinite;
+}
+.icon-mobApps .hook {
+    transform-origin: 148px 24px;
+    animation: bounce3 1.6s ease-in-out infinite;
+}
+.icon-mobApps .play-bar--play {
+    opacity: 1;
+}
+.icon-mobApps .play-bar--pause {
+    opacity: 0;
+}
+.icon-mobApps .hover {
+    animation-play-state: paused !important;
+}
+.icon-mobApps:hover .hover {
+    animation-play-state: running !important;
+}
+.icon-mobApps:hover .play-bar--play {
+    opacity: 0;
+}
+.icon-mobApps:hover .play-bar--pause {
+    opacity: 1;
+}
+
+.icon-wordpress {
+    width: 80%;
+}
+.icon-wordpress .graph {
+    animation: bounce 1.4s ease-in-out infinite;
+}
+.icon-wordpress .mouse {
+    animation: bounceBFt2 1.6s ease-in-out infinite;
+}
+.icon-wordpress .wp-logo {
+    animation: twinkle2 4s ease-in-out infinite;
+}
+.icon-wordpress .keyboard [class*=key] {
+    animation: typing 2.75s linear infinite;
+}
+.icon-wordpress .keyboard .key-1 {
+    animation-delay: 0.2291666667s;
+}
+.icon-wordpress .keyboard .key-2 {
+    animation-delay: 0.4583333333s;
+}
+.icon-wordpress .keyboard .key-3 {
+    animation-delay: 0.6875s;
+}
+.icon-wordpress .keyboard .key-4 {
+    animation-delay: 0.9166666667s;
+}
+.icon-wordpress .keyboard .key-5 {
+    animation-delay: 1.1458333333s;
+}
+.icon-wordpress .keyboard .key-6 {
+    animation-delay: 1.375s;
+}
+.icon-wordpress .keyboard .key-7 {
+    animation-delay: 1.6041666667s;
+}
+.icon-wordpress .keyboard .key-8 {
+    animation-delay: 1.8333333333s;
+}
+.icon-wordpress .keyboard .key-9 {
+    animation-delay: 2.0625s;
+}
+.icon-wordpress .keyboard .key-10 {
+    animation-delay: 2.2916666667s;
+}
+.icon-wordpress .keyboard .key-11 {
+    animation-delay: 2.5208333333s;
+}
+.icon-wordpress .keyboard .key-12 {
+    animation-delay: 2.75s;
+}
+@keyframes typing {
+    0%, 2% {
+        opacity: 0.6;
+    }
+    4% {
+        opacity: 1;
+    }
+}
+.icon-wordpress .code-line {
+    animation: shrink 1s ease-in-out infinite;
+}
+.icon-wordpress .code-line1 {
+    animation-delay: 0.3s;
+}
+.icon-wordpress .code-line2 {
+    animation-delay: 0.9s;
+}
+.icon-wordpress .code-line3 {
+    animation-delay: 0.2s;
+}
+.icon-wordpress .code-line5 {
+    animation-delay: 0.5s;
+}
+.icon-wordpress .code-line6 {
+    animation-delay: 0.8s;
+}
+.icon-wordpress .code-line8 {
+    animation-delay: 0.4s;
+}
+.icon-wordpress .hover,
+.icon-wordpress .keyboard path[class*=key] {
+    animation-play-state: paused;
+}
+.icon-wordpress:hover .hover,
+.icon-wordpress:hover .keyboard path[class*=key] {
+    animation-play-state: running;
+}
+
+.icon-webApps .ruler {
+    animation: bounceBF 1.8s ease-in-out infinite;
+}
+.icon-webApps .panel {
+    animation: twinkle3 3s ease-in-out infinite;
+}
+.icon-webApps .panel2 {
+    animation-delay: 0.5s;
+}
+.icon-webApps .panel3 {
+    animation-delay: 1s;
+}
+.icon-webApps .panel4 {
+    animation-delay: 1.5s;
+}
+.icon-webApps .panel5 {
+    animation-delay: 2s;
+}
+.icon-webApps .line-1 {
+    transform-origin: 162px;
+    animation: shrink 2s ease-in-out infinite;
+}
+.icon-webApps .line-2,
+.icon-webApps .line-3 {
+    transform-origin: 144.3px 0;
+    animation: shrink 2s ease-in-out infinite;
+}
+.icon-webApps .line-2 {
+    animation-delay: -0.4s;
+}
+.icon-webApps .blink1,
+.icon-webApps .blink2,
+.icon-webApps .blink3 {
+    animation: 6s linear infinite;
+}
+.icon-webApps .blink1 {
+    animation-name: bubble-b;
+}
+.icon-webApps .blink2 {
+    animation-name: bubble-m;
+}
+.icon-webApps .blink3 {
+    animation-name: bubble-t;
+}
+.icon-webApps .play-btn {
+    opacity: 1;
+}
+.icon-webApps .pause-btn {
+    opacity: 0;
+}
+.icon-webApps .hover {
+    animation-play-state: paused;
+}
+.icon-webApps:hover .play-btn {
+    opacity: 0;
+}
+.icon-webApps:hover .pause-btn {
+    opacity: 1;
+}
+.icon-webApps:hover .hover {
+    animation-play-state: running;
+}
+
+.star {
+    animation: twinkle 4s ease-in-out infinite;
+}
+.star-2 {
+    animation-delay: 1s;
+}
+
+@keyframes twinkle {
+    0%, 50%, 100% {
+        transform: scale(1);
+    }
+    25%, 75% {
+        transform: scale(1.6);
+    }
+}
+@keyframes twinkle2 {
+    0%, 50%, 100% {
+        transform: scale(1);
+    }
+    25%, 75% {
+        transform: scale(1.07);
+    }
+}
+@keyframes twinkle3 {
+    0%, 50%, 100% {
+        transform: scale(1);
+    }
+    25%, 75% {
+        transform: scale(1.14);
+    }
+}
+@keyframes bubble-t {
+    26%, 80% {
+        transform: scale(0);
+    }
+    20%, 86% {
+        transform: scale(1);
+    }
+}
+@keyframes bubble-m {
+    36%, 70% {
+        transform: scale(0);
+    }
+    30%, 76% {
+        transform: scale(1);
+    }
+}
+@keyframes bubble-b {
+    46%, 60% {
+        transform: scale(0);
+    }
+    40%, 66% {
+        transform: scale(1);
+    }
+}
+@keyframes bounce {
+    50% {
+        transform: rotate(-6deg);
+    }
+}
+@keyframes bounce2 {
+    50% {
+        transform: rotate(6deg);
+    }
+}
+@keyframes bounce3 {
+    50% {
+        transform: rotate(3deg);
+    }
+}
+@keyframes bounceBF {
+    0%, 100% {
+        transform: rotate(1.6deg);
+    }
+    50% {
+        transform: rotate(-1.6deg);
+    }
+}
+@keyframes bounceBFt2 {
+    0%, 100% {
+        transform: rotate(4.6deg);
+    }
+    50% {
+        transform: rotate(-4.6deg);
+    }
+}
+@keyframes shrink {
+    50% {
+        transform: scaleX(0.3);
+    }
+}
+@keyframes rotate {
+    to {
+        transform: rotate(1turn);
+    }
+}
+@keyframes rotate-reverse {
+    to {
+        transform: rotate(-1turn);
+    }
+}
