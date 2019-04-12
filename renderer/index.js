@@ -5,7 +5,6 @@ const FS = require('fs');
 const {ipcRenderer} = require('electron');
 const SVG = require('svg.js');
 
-
 let register = function () {
     listener();
     buttonRegister();
@@ -84,6 +83,10 @@ let buttonRegister = function () {
 
     //navigation tool
     document.getElementById('signal-box').addEventListener('click', eventHandler.signal.trigger);
+
+    document.getElementById('help-box').addEventListener('click', function () {
+        ipcRenderer.send('help-event', 'help');
+    });
 };
 
 let animationRegister = function () {
@@ -97,9 +100,9 @@ let animationRegister = function () {
 
     let bellAnime = SVG('bell');
     bellAnime.mouseover(function () {
-        this.animate(100).rotate(25, 0, 0)
+        this.animate(100).rotate(15, 0, 0)
             .animate(100).rotate(0, 0, 0)
-            .animate(100).rotate(-25, 0, 0)
+            .animate(100).rotate(-15, 0, 0)
             .animate(100).rotate(0, 0, 0);
     });
     bellAnime.mouseout(function () {

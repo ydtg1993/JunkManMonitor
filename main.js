@@ -3,7 +3,7 @@ const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const IpcMain = electron.ipcMain;
-
+const SHELL = require('electron').shell;
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -76,6 +76,10 @@ let eventListen = function () {
         } else if (arg == 'disconnect') {
             socketWorker.close();
         }
+    });
+
+    IpcMain.on('help-event', (event, arg) => {
+        SHELL.openExternal("https://github.com/ydtg1993/JunkManMonitor");
     });
 
     mainWindow.on('ready-to-show', () => {
