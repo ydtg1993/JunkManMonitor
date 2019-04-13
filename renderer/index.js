@@ -4,6 +4,7 @@
 const FS = require('fs');
 const {ipcRenderer} = require('electron');
 const SVG = require('svg.js');
+const sprintf = require('sprintf-js').sprintf;
 
 let register = function () {
     listener();
@@ -11,12 +12,30 @@ let register = function () {
     animationRegister();
 };
 
-let tmpData = {
+let Stream = {};
+
+let DataStructure = {
+    "title": "",
+    "status": "",
+    "time": "",
+    "code": "",
+    "stream_type": "",
+    "trace_file": "",
+    "trace_file_content": {},
+    "trace_start_line": "",
+    "trace_end_line": "",
+    "trace_start_time": "",
+    "trace_end_time": "",
+    "TraceDataBuffer": [],
+    "extend": ""
+};
+
+let TmpData = {
     maximize: false,
     signal: 0,//0:disconnect 1:connecting 2:connected
 };
 
-let signalSvg = {
+let SignalSvg = {
     connect: '<svg id="signal" t="1554198386308" class="icon" style="" viewBox="0 0 1024 1024" version="1.1"\n' +
         '                 xmlns="http://www.w3.org/2000/svg"\n' +
         '                 p-id="19814" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20">\n' +
@@ -55,17 +74,114 @@ let signalSvg = {
 let listener = function () {
     ipcRenderer.on('stream', (event, arg) => {
         if (arg == 'connected') {
-            tmpData.signal = 2;
-            document.getElementById('signal-box').innerHTML = signalSvg.connected;
+            TmpData.signal = 2;
+            document.getElementById('signal-box').innerHTML = SignalSvg.connected;
             return
         } else if (arg == 'disconnect') {
-            tmpData.signal = 0;
-            document.getElementById('signal-box').innerHTML = signalSvg.connect;
+            TmpData.signal = 0;
+            document.getElementById('signal-box').innerHTML = SignalSvg.connect;
             return
         }
         let data = JSON.parse(arg);
-        console.log(data)
+        for (let i in DataStructure) {
+            DataStructure[i] = "";
+            DataStructure[i] = data[i];
+        }
+        labour.work(DataStructure)
     });
+};
+
+let labour = {
+    panel: {
+        stack: '<div class="stack" data-name="%s" data-shrink="0">\n' +
+            '                <div class="row">\n' +
+            '                    <div class="shrink-icon shrink-event"><img class="icon" src="resource/image/shrink.svg"></div>\n' +
+            '                    <div class="title shrink-event">%s</div>\n' +
+            '                    <div>\n' +
+            '                        <span class="number-tip">%d</span>\n' +
+            '                        <img class="icon delete-stack" src="resource/image/delete2.svg">\n' +
+            '                    </div>\n' +
+            '                </div>\n' +
+            '                %s' +
+            '            </div>',
+        unit: '<div class="row-list" data-code="%s" style="%s">\n' +
+            '                    <div class="row-list-icon"><img class="icon" src="resource/image/time.svg"></div>\n' +
+            '                    <div class="title open-event">%s</div>\n' +
+            '                    <div>\n' +
+            '                        <img class="icon information-unit" style="width: 15.5px" src="resource/image/information.svg">\n' +
+            '                        <img class="icon delete-unit" src="resource/image/delete.svg">\n' +
+            '                    </div>\n' +
+            '                </div>'
+    },
+    registerEvent: {
+        shrink: function () {
+            let stackDom = this.parentNode.parentNode;
+            let mark = stackDom.getAttribute('data-shrink');
+            let children = stackDom.childNodes;
+
+            let occur = 'display:none;';
+            if (mark == 0) {
+                //spread
+                stackDom.setAttribute('data-shrink',1);
+                occur = 'display:grid;';
+            }else {
+                stackDom.setAttribute('data-shrink',0);
+            }
+
+            for (let i = 2; i < children.length; i++) {
+                if (children[i] instanceof HTMLElement) {
+                    children[i].setAttribute('style', occur);
+                }
+            }
+        }
+    },
+    work: function (DataStructure) {
+        let html = '';
+        if (DataStructure.title == "") {
+            DataStructure.title = "Default";
+        }
+        let code = DataStructure.code;
+        if (Stream[DataStructure.title] == null) {
+            //first add
+            let catalogDom = document.getElementById('catalog-list');
+            Stream[DataStructure.title] = {};
+            Stream[DataStructure.title][code] = DataStructure;
+
+            let date = new Date(DataStructure.time * 1000).toLocaleString();
+            let unit = sprintf(labour.panel.unit, code,"", date);
+            html += sprintf(labour.panel.stack, DataStructure.title, DataStructure.title, 1, unit);
+            catalogDom.innerHTML = html + catalogDom.innerHTML;
+
+            document.getElementsByClassName('shrink-event');
+            bindClassEvent('shrink-event', 'click', labour.registerEvent.shrink);
+            return
+        }
+
+        //append
+        Stream[DataStructure.title][code] = DataStructure;
+        let stackDoms = document.getElementsByClassName('stack');
+        let stack;
+        for (let index = 0; index < stackDoms.length; index++) {
+            let stackName = stackDoms[index].getAttribute('data-name');
+            if (stackName == DataStructure.title) {
+                stack = stackDoms[index];
+                let notice = parseInt(stack.children[0].children[2].children[0].innerHTML);
+                notice += 1;
+                let date = new Date(DataStructure.time * 1000).toLocaleString();
+
+                let mark = stack.getAttribute('data-shrink');
+                let viewStyle;
+                if(mark == 0){
+                    viewStyle = 'display:none;';
+                }else {
+                    viewStyle = 'display:grid;';
+                }
+                stack.innerHTML = stack.innerHTML + sprintf(labour.panel.unit, code,viewStyle, date);
+                stack.children[0].children[2].children[0].innerHTML = notice.toString();
+            }
+        }
+        bindClassEvent('shrink-event', 'click', labour.registerEvent.shrink);
+    }
 };
 
 let buttonRegister = function () {
@@ -113,7 +229,7 @@ let animationRegister = function () {
 let eventHandler = {
     maximize: {
         trigger: function () {
-            if (!tmpData.maximize) {
+            if (!TmpData.maximize) {
                 eventHandler.maximize.max()
             } else {
                 eventHandler.maximize.unmax()
@@ -121,27 +237,27 @@ let eventHandler = {
         },
         max: function () {
             ipcRenderer.send('window-event', 'maximize');
-            tmpData.maximize = true;
+            TmpData.maximize = true;
         },
         unmax: function () {
             ipcRenderer.send('window-event', 'unmaximize');
-            tmpData.maximize = false;
+            TmpData.maximize = false;
         }
     },
     signal: {
         trigger: function () {
-            if (tmpData.signal == 0) {
-                tmpData.signal = 1;
-                this.innerHTML = signalSvg.connecting;
+            if (TmpData.signal == 0) {
+                TmpData.signal = 1;
+                this.innerHTML = SignalSvg.connecting;
                 eventHandler.signal.connect();
                 return
-            } else if (tmpData.signal == 1) {
+            } else if (TmpData.signal == 1) {
                 //connecting
                 return
             } else {
-                tmpData.signal = 0;
+                TmpData.signal = 0;
                 eventHandler.signal.disconnect();
-                this.innerHTML = signalSvg.connect;
+                this.innerHTML = SignalSvg.connect;
             }
         },
         connect: function () {
@@ -151,6 +267,23 @@ let eventHandler = {
             ipcRenderer.send('socket-event', 'disconnect');
         }
     },
+};
+
+
+function bindClassEvent(className, event, func) {
+    let objs = document.getElementsByClassName(className);
+    for (let i = 0; i < objs.length; i++) {
+        objs[i].addEventListener(event, func, false);
+    }
+}
+
+Date.prototype.toLocaleString = function () {
+    return this.getFullYear() + "/" +
+        (this.getMonth() + 1) + "/" +
+        this.getDate() + " " +
+        this.getHours() + ":" +
+        this.getMinutes() + ":" +
+        this.getSeconds();
 };
 
 

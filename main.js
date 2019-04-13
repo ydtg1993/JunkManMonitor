@@ -15,7 +15,7 @@ function createWindow() {
         height: 750,
         show: false,
         resizable: false,
-        frame: false
+        //frame: false
     });
 
     // and load the index.html of the app.
@@ -161,12 +161,11 @@ let packageWorker = {
             packageWorker.data += message;
             JunkManClient.pause();
             if (isJSON(packageWorker.data)) {
-                mainWindow.webContents.send('stream', packageWorker.data)
+                mainWindow.webContents.send('stream', packageWorker.data);
                 packageWorker.reset();
                 JunkManClient.resume();
                 return
             } else if (packageWorker.flag > 5) {
-                console.log('a lot of package error');
                 packageWorker.reset()
             }
             JunkManClient.resume();
@@ -194,7 +193,6 @@ function isJSON(str) {
         JSON.parse(str);
         return true;
     } catch (e) {
-        console.log(e)
         return false;
     }
 }
