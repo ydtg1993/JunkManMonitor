@@ -116,7 +116,7 @@ let socketWorker = {
             electron.dialog.showMessageBox({
                 title: 'connection error',
                 type: 'error',
-                message: "can't connect the server. please check your config!"
+                message: "Unable to connect'to the remote server. check your settings!"
             })
         });
 

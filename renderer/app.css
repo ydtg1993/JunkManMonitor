@@ -5,8 +5,9 @@ table,td,tr,th{font-size:12px;}
 li{list-style-type:none;}
 img{vertical-align:top;border:0;}
 ol,ul {list-style:none;}
-h1,h2,h3,h4,h5,h6{font-size:12px; font-weight:normal;}
+h4,h5,h6{font-size:12px; font-weight:normal;}
 address,cite,code,em,th {font-weight:normal; font-style:normal;}
+hr {height: 1px;background-color: #aeaeaf;border: none;font-size: 1px;margin: 10px 0 10px}
 .scroll::-webkit-scrollbar {/*滚动条整体样式*/
     width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
 }
@@ -157,7 +158,7 @@ button,a {
     background-color: #d02779;
     border-radius: 3px;
     height: auto;
-    margin-bottom: 2px;
+    margin: 0 2px 2px;
 }
 
 .stack>.row-list>.row-list-icon{
@@ -293,6 +294,174 @@ button,a {
 .card>.card-operate{
     display: table-cell;
     text-align: right;
+}
+
+/*fittings*/
+#mongolia{
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 15px 15px;
+    background: rgba(0,0,0,.6);
+    transition: opacity .15s linear;
+}
+
+/*form*/
+#form{
+    display: none;
+    z-index: 10000;
+    position: fixed;
+    top: calc(50% - 100px);
+    left: calc(50% - 225px);
+    box-sizing: border-box;
+    width: 450px;
+    background-color: #ebebeb;
+    transform: translateY(-100px);
+    transition: .3s linear;
+    transition-property: opacity,transform;
+}
+
+#form .main{
+    margin: 10px 30px 0;
+}
+
+#form .bottom{
+    text-align: right;
+    margin: 0 30px 10px;
+}
+
+#form .bottom>button{
+    color: white;
+    cursor: pointer;
+    margin: 0;
+    border: none;
+    overflow: visible;
+    font: inherit;
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 0 30px;
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 38px;
+    text-align: center;
+    text-decoration: none;
+    transition: .1s ease-in-out;
+    transition-property: color,background-color,border-color;
+}
+
+#form .bottom>.apply{
+    background-color: #1e87f0;
+}
+
+#form .bottom>.cancel{
+    background-color: #223a53;
+}
+
+#form .bottom>.apply:focus{
+    outline: none;
+    background-color: #1a7ada;
+}
+
+#form .bottom>.cancel:focus{
+    outline: none;
+    background-color: #16283a;
+}
+
+#form .panel>.grid{
+    display: grid;
+    grid-template-columns:15% auto;
+    padding-left: 15px;
+}
+
+#form .name{
+    display: inline-block;
+    text-align: center;
+    line-height: 38px;
+    height: 38px;
+    border:1px #85a8ca solid;
+}
+
+#form .input{
+    margin-top: 0;
+    height: 40px;
+    vertical-align: middle;
+    display: inline-block;
+    max-width: 100%;
+    width: 100%;
+    padding: 0 10px;
+    background: #fff;
+    color: #666;
+    border: 1px solid #e5e5e5;
+    transition: .2s ease-in-out;
+    transition-property: border;
+    box-sizing: border-box;
+    border-radius: 0;
+    font: inherit;
+}
+
+#form .grid{
+    margin-top: 15px;
+}
+
+#form .grid:nth-child(2){
+    margin-top: 0;
+}
+
+#form .input:focus{
+    outline: none;
+    background-color: #fff;
+    color: #666;
+    border-color: #1e87f0;
+}
+
+#form .description{
+    width: 100%;
+    overflow: hidden;
+    color: #7e7e7e;
+}
+
+#form .descriptionLine{
+    display: inline-block;
+    position: relative;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+#form .descriptionLine:after{
+    left: 95%;
+    margin-left: .6em;
+    content: "";
+    position: absolute;
+    top: calc(50% - (1px / 2));
+    width: 2000px;
+    border-bottom: 1px solid #b3b4c0;
+}
+
+#form .conserve{
+    cursor: pointer!important;
+    background-color: #1e87f0;
+    color: #fff!important;
+    border: 1px solid transparent!important;
+    margin: 0;
+    overflow: visible;
+    font: inherit;
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 0 30px;
+    vertical-align: middle;
+    font-size: 12px;
+    line-height: 30px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: .1s ease-in-out;
+    transition-property: color,background-color,border-color;
 }
 
 
