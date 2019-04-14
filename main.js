@@ -4,6 +4,8 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const IpcMain = electron.ipcMain;
 const SHELL = require('electron').shell;
+const FS = require('fs');
+const PATH=require('path');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -82,6 +84,14 @@ let eventListen = function () {
         SHELL.openExternal("https://github.com/ydtg1993/JunkManMonitor");
     });
 
+    IpcMain.on('error-waring',(event, arg) => {
+        electron.dialog.showMessageBox({
+            title: 'warning',
+            type: 'error',
+            message: arg
+        })
+    });
+
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();
     });
@@ -93,8 +103,9 @@ let socketWorker = {
     palpitation: null,
     connect: function () {
         let net = require('net');
-        let HOST = '103.46.128.49';
-        let PORT = 26841;
+        let config = getConfigFile();
+        let HOST = config.host;
+        let PORT = config.port;
 
         global.JunkManClient = new net.Socket();
         JunkManClient.setKeepAlive(true);
@@ -193,6 +204,18 @@ function isJSON(str) {
         JSON.parse(str);
         return true;
     } catch (e) {
+        return false;
+    }
+}
+
+function getConfigFile() {
+    let file = PATH.join(__dirname,'/resource/config.json');
+    try {
+        let data = FS.readFileSync(file, 'utf8');
+        let config = JSON.parse(data);
+        return config;
+    }catch (e) {
+        console.log(e);
         return false;
     }
 }

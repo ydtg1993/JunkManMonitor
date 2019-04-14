@@ -1,7 +1,1 @@
-{
-  "host": "103.46.128.49",
-  "port": "26841",
-  "IPv": 6,
-  "auto-connect": 0,
-  "palpitation":3000
-}
+{"host":"103.46.128.49","port":"26841","IPv":4,"auto-connect":0,"palpitation":3000}

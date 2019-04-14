@@ -132,8 +132,10 @@ let labour = {
                     //spread
                     stackDom.setAttribute('data-shrink', 1);
                     occur = 'display:grid;';
+                    stackDom.children[0].children[0].children[0].setAttribute('src','resource/image/spread.svg');
                 } else {
                     stackDom.setAttribute('data-shrink', 0);
+                    stackDom.children[0].children[0].children[0].setAttribute('src','resource/image/shrink.svg');
                 }
 
                 for (let i = 2; i < children.length; i++) {
@@ -313,24 +315,35 @@ let eventHandler = {
 
                 let config = getConfigFile();
                 if(!config){
-                    TmpData.form_lock = true;
                     eventHandler.setting.resetConfigFile();
+                    ipcRenderer.send('error-waring', 'unexpected error! reset config');
+                    TmpData.form_lock = true;
                     return
                 }
+                config.host = hotsInput.value;
+                if(portInput.value < 0 || portInput.value > 65535){
+                    ipcRenderer.send('error-waring', 'port should be > 0 and <65535');
+                    TmpData.form_lock = true;
+                    return
+                }
+                config.port = portInput.value;
+                config.IPv = parseInt(IPvInput.value);
+                config["auto-connect"] = parseInt(autoInput.value);
+                writeConfigFile(config);
 
                 eventHandler.setting.shut();
-                TmpData.form_lock = true;
             }
         },
         cancel:function(){
-
+            eventHandler.setting.shut();
         },
         shut:function () {
+            TmpData.form_lock = true;
             document.getElementById('mongolia').setAttribute('style', 'display:none;');
             document.getElementById('form').setAttribute('style', 'display:none;');
         },
         resetConfigFile:function () {
-
+            writeConfigFile({"host":"127.0.0.1","port":"9303","IPv":4,"auto-connect":0,"palpitation":3000});
         }
     }
 };
@@ -349,7 +362,8 @@ function getConfigFile() {
 
 function writeConfigFile(data) {
     let file = PATH.join(__dirname,'/resource/config.json');
-    FS.writeFile(file, '',function(err){
+    let str = JSON.stringify(data);
+    FS.writeFile(file, str,function(err){
         if(err) console.log('写文件操作失败');
     });
 }
