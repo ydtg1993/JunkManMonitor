@@ -8,6 +8,9 @@ const PATH=require('path');
 const sprintf = require('sprintf-js').sprintf;
 
 let register = function () {
+    line_area = document.getElementById('line_content');
+    file_area = document.getElementById('file_content');
+    var_area = document.getElementById('var_content');
     listener();
     buttonRegister();
     animationRegister();
@@ -34,6 +37,9 @@ let DataStructure = {
 let TmpData = {
     maximize: false,
     signal: 0,//0:disconnect 1:connecting 2:connected
+
+    //current data
+    focusData:{},
 
     //lock
     shrink_lock: true,
@@ -145,6 +151,70 @@ let labour = {
                 }
                 TmpData.shrink_lock = true;
             }
+        },
+        open:function () {
+            let rowDom = this.parentNode;
+            let stackDom = rowDom.parentNode;
+            let code = rowDom.getAttribute('data-code');
+            let title = stackDom.getAttribute('data-name');
+            let TraceDataHash = {};
+
+            let data = Stream[title][code];
+            TmpData.focusData = {};
+            if(data == null){
+                return;
+            }
+            TmpData.focusData = data;
+            for (let i in data.TraceDataBuffer) {
+                let tmp = data.TraceDataBuffer[i];
+                if(TraceDataHash[tmp.Line]) {
+                    TraceDataHash[tmp.Line].push(tmp);
+                    continue;
+                }
+                TraceDataHash[tmp.Line] = [tmp];
+            }
+
+            line_area.innerHTML = "";
+            file_area.innerHTML = "";
+            var_area.innerHTML = "";
+
+            let trace_file_content = data.trace_file_content;
+            for (let line in trace_file_content){
+                line_area.innerHTML+= "<p>"+line+"</p>";
+                file_area.innerHTML+= "<p data-line='"+line+"'>"+trace_file_content[line].replace(/\s/g, "&ensp;")+"</p>";
+            }
+            $("#var_content").JSONView(data.TraceDataBuffer);
+            //line explain
+            $("#file_content p").click(function () {
+                event.stopPropagation();
+                for (let index in file_area.childNodes){
+                    if ((file_area.childNodes[index] instanceof HTMLElement) == false) {
+                        continue;
+                    }
+                    let dom = file_area.childNodes[index];
+                    dom.setAttribute('style', 'background-color:transparent');
+                }
+                $(this).css('background-color','lightyellow');
+                let index = parseInt($(this).attr('data-line'));
+
+                if(TraceDataHash[index]) {
+                    $("#var_content").JSONView(TraceDataHash[index]);
+                }else {
+                    var_area.innerHTML = "";
+                }
+            });
+
+            file_area.addEventListener('click',labour.registerEvent.explainReset);
+        },
+        explainReset:function () {
+            for (let index in file_area.childNodes){
+                if ((file_area.childNodes[index] instanceof HTMLElement) == false) {
+                    continue;
+                }
+                let dom = file_area.childNodes[index];
+                dom.setAttribute('style', 'background-color:transparent');
+            }
+            $("#var_content").JSONView(TmpData.focusData.TraceDataBuffer);
         }
     },
     work: function (DataStructure) {
@@ -166,6 +236,7 @@ let labour = {
 
             document.getElementsByClassName('shrink-event');
             bindClassEvent('shrink-event', 'click', labour.registerEvent.shrink);
+            bindClassEvent('open-event','click',labour.registerEvent.open);
             return
         }
 
@@ -193,6 +264,7 @@ let labour = {
             }
         }
         bindClassEvent('shrink-event', 'click', labour.registerEvent.shrink);
+        bindClassEvent('open-event','click',labour.registerEvent.open);
     }
 };
 
@@ -229,7 +301,7 @@ let animationRegister = function () {
     });
     setAnime.mouseout(function () {
         this.stop()
-    })
+    });
 
     let bellAnime = SVG('bell');
     bellAnime.mouseover(function () {

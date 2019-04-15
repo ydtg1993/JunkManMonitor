@@ -13,13 +13,13 @@ hr {height: 1px;background-color: #aeaeaf;border: none;font-size: 1px;margin: 10
     width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
 }
 .scroll::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-    border-radius: 5px;
+    border-radius: 3px;
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
     background: #ededed;
 }
 .scroll::-webkit-scrollbar-track {/*滚动条里面轨道*/
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-    border-radius: 5px;
+    border-radius: 3px;
     background: transparent;
 }
 
@@ -235,7 +235,7 @@ button,a {
 }
 #content{
     display: grid;
-    grid-template-columns: 5% auto 25%;
+    grid-template-columns: 5% auto 30%;
     width: 100%;
     height: 100%;
 }
@@ -245,6 +245,7 @@ button,a {
     background: #f3f2f3;
     border-left: 1px solid #dac7c7;
     border-right: 1px solid #dac7c7;
+    overflow-x: hidden;
 }
 
 #file_content{
@@ -252,13 +253,53 @@ button,a {
     background-color: #f9f9f9;
     background-position: center center;
     background-repeat: no-repeat;
-    cursor: text;
 }
 
 #var_content{
     text-align: left;
     background: #f3f2f3;
     border-left: 1px solid #dac7c7;
+}
+
+#line_content p{
+    display: block;
+    text-align: left;
+    padding-left: 5px;
+    padding-right: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    color: #9f9797;
+    margin: 5px 0 5px;
+    cursor: text;
+}
+
+#file_content p{
+    display: block;
+    text-align: left;
+    padding-left: 5px;
+    padding-right: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    color: #000000;
+    margin: 5px 0 5px;
+}
+
+#file_content p::selection {
+    background:#a1b5f3;
+}
+
+#var_content p{
+    display: block;
+    text-align: left;
+    padding-left: 5px;
+    padding-right: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    color: #000000;
+    margin: 5px 0 5px;
 }
 
 /*bottom*/
