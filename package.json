@@ -22,6 +22,7 @@
   "dependencies": {
     "jquery": "^3.4.0",
     "jsonview": "^1.2.0",
+    "php-parser": "^3.0.0-prerelease.8",
     "sprintf-js": "^1.1.2",
     "svg.js": "^2.7.1"
   }

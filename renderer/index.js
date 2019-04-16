@@ -6,11 +6,24 @@ const {ipcRenderer} = require('electron');
 const SVG = require('svg.js');
 const PATH=require('path');
 const sprintf = require('sprintf-js').sprintf;
+const engine = require('php-parser');
 
 let register = function () {
-    line_area = document.getElementById('line_content');
-    file_area = document.getElementById('file_content');
-    var_area = document.getElementById('var_content');
+    LINE_AREA = document.getElementById('line_content');
+    FILE_AREA = document.getElementById('file_content');
+    VAR_AREA = document.getElementById('var_content');
+    PARSER = new engine({
+        // some options :
+        parser: {
+            extractDoc: true,
+            php7: true
+        },
+        ast: {
+            withPositions: true
+        }
+    });
+    let eval = PARSER.parseEval('array("a"=>1,"b"=>2,"c"=>array(0,1))');
+    console.log(eval);
     listener();
     buttonRegister();
     animationRegister();
@@ -174,24 +187,34 @@ let labour = {
                 TraceDataHash[tmp.Line] = [tmp];
             }
 
-            line_area.innerHTML = "";
-            file_area.innerHTML = "";
-            var_area.innerHTML = "";
+            LINE_AREA.innerHTML = "";
+            FILE_AREA.innerHTML = "";
+            VAR_AREA.innerHTML = "";
 
             let trace_file_content = data.trace_file_content;
             for (let line in trace_file_content){
-                line_area.innerHTML+= "<p>"+line+"</p>";
-                file_area.innerHTML+= "<p data-line='"+line+"'>"+trace_file_content[line].replace(/\s/g, "&ensp;")+"</p>";
+                LINE_AREA.innerHTML+= "<p>"+line+"</p>";
+                if(TraceDataHash[line]){
+                    let span = "&ensp;&ensp;";
+                    for( let i in TraceDataHash[line]){
+                        if(TraceDataHash[line][i]) {
+                            span += "<span>" + JSON.stringify(TraceDataHash[line][i]) + "&ensp;&ensp;<span/>";
+                        }
+                    }
+                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&ensp;") + span + "</p>";
+                }else {
+                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&ensp;") + "</p>";
+                }
             }
             $("#var_content").JSONView(data.TraceDataBuffer);
             //line explain
             $("#file_content p").click(function () {
                 event.stopPropagation();
-                for (let index in file_area.childNodes){
-                    if ((file_area.childNodes[index] instanceof HTMLElement) == false) {
+                for (let index in FILE_AREA.childNodes){
+                    if ((FILE_AREA.childNodes[index] instanceof HTMLElement) == false) {
                         continue;
                     }
-                    let dom = file_area.childNodes[index];
+                    let dom = FILE_AREA.childNodes[index];
                     dom.setAttribute('style', 'background-color:transparent');
                 }
                 $(this).css('background-color','lightyellow');
@@ -200,18 +223,18 @@ let labour = {
                 if(TraceDataHash[index]) {
                     $("#var_content").JSONView(TraceDataHash[index]);
                 }else {
-                    var_area.innerHTML = "";
+                    VAR_AREA.innerHTML = "";
                 }
             });
 
-            file_area.addEventListener('click',labour.registerEvent.explainReset);
+            FILE_AREA.addEventListener('click',labour.registerEvent.explainReset);
         },
         explainReset:function () {
-            for (let index in file_area.childNodes){
-                if ((file_area.childNodes[index] instanceof HTMLElement) == false) {
+            for (let index in FILE_AREA.childNodes){
+                if ((FILE_AREA.childNodes[index] instanceof HTMLElement) == false) {
                     continue;
                 }
-                let dom = file_area.childNodes[index];
+                let dom = FILE_AREA.childNodes[index];
                 dom.setAttribute('style', 'background-color:transparent');
             }
             $("#var_content").JSONView(TmpData.focusData.TraceDataBuffer);

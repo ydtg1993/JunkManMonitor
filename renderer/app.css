@@ -110,8 +110,9 @@ button,a {
 #main{
     width:100%;
     display: grid;
-    height: calc(100% - 90px);
+    height: calc(100% - 70px);
     grid-template-columns: 250px auto;
+    overflow-x: hidden;
 }
 
 #catalog{
@@ -229,6 +230,7 @@ button,a {
     width: 100%;
     background-size: cover;
     overflow-y: auto;
+    overflow-x: hidden
 }
 #detail::-webkit-scrollbar-thumb{
     background: #36343a;
@@ -237,7 +239,16 @@ button,a {
     display: grid;
     grid-template-columns: 5% auto 30%;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 21px);
+}
+
+#content-nav{
+    display: block;
+    height: 20px;
+    width: 100%;
+    background-color: #f3f2f3;
+    border-bottom: 1px solid #dac7c7;
+    border-left: 1px solid #dac7c7;
 }
 
 #line_content{
@@ -253,6 +264,7 @@ button,a {
     background-color: #f9f9f9;
     background-position: center center;
     background-repeat: no-repeat;
+    overflow-x: hidden;
 }
 
 #var_content{
@@ -284,6 +296,11 @@ button,a {
     overflow: hidden;
     color: #000000;
     margin: 5px 0 5px;
+    width: 100%;
+}
+
+#file_content span{
+    color: grey;
 }
 
 #file_content p::selection {
