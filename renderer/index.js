@@ -9,21 +9,15 @@ const sprintf = require('sprintf-js').sprintf;
 const engine = require('php-parser');
 
 let register = function () {
+    TRACE_STREAM = "stream";
+    TRACE_FLOOD  = "flood";
+    TRACE_SPOT   = "spot";
+    TRACE_ERR    = "error";
+
     LINE_AREA = document.getElementById('line_content');
     FILE_AREA = document.getElementById('file_content');
     VAR_AREA = document.getElementById('var_content');
-    PARSER = new engine({
-        // some options :
-        parser: {
-            extractDoc: true,
-            php7: true
-        },
-        ast: {
-            withPositions: true
-        }
-    });
-    let eval = PARSER.parseEval('array("a"=>1,"b"=>2,"c"=>array(0,1))');
-    console.log(eval);
+
     listener();
     buttonRegister();
     animationRegister();
@@ -108,6 +102,7 @@ let listener = function () {
             return
         }
         let data = JSON.parse(arg);
+        console.log(data);
         for (let i in DataStructure) {
             DataStructure[i] = "";
             DataStructure[i] = data[i];
@@ -170,7 +165,6 @@ let labour = {
             let stackDom = rowDom.parentNode;
             let code = rowDom.getAttribute('data-code');
             let title = stackDom.getAttribute('data-name');
-            let TraceDataHash = {};
 
             let data = Stream[title][code];
             TmpData.focusData = {};
@@ -178,6 +172,26 @@ let labour = {
                 return;
             }
             TmpData.focusData = data;
+            LINE_AREA.innerHTML = "";
+            FILE_AREA.innerHTML = "";
+            VAR_AREA.innerHTML = "";
+
+            FILE_AREA.removeEventListener('click',labour.registerEvent.explainStreamReset);
+            switch (data.stream_type) {
+                case TRACE_STREAM:
+                    labour.registerEvent.streamOpen();
+                    break;
+                case TRACE_SPOT:
+                    labour.registerEvent.spotOpen();
+                    break;
+                case TRACE_ERR:
+                    labour.registerEvent.errorOpen();
+                    break;
+            }
+        },
+        streamOpen:function(){
+            let TraceDataHash = {};
+            let data = TmpData.focusData;
             for (let i in data.TraceDataBuffer) {
                 let tmp = data.TraceDataBuffer[i];
                 if(TraceDataHash[tmp.Line]) {
@@ -186,10 +200,6 @@ let labour = {
                 }
                 TraceDataHash[tmp.Line] = [tmp];
             }
-
-            LINE_AREA.innerHTML = "";
-            FILE_AREA.innerHTML = "";
-            VAR_AREA.innerHTML = "";
 
             let trace_file_content = data.trace_file_content;
             for (let line in trace_file_content){
@@ -201,9 +211,9 @@ let labour = {
                             span += "<span>" + JSON.stringify(TraceDataHash[line][i]) + "&nbsp;&nbsp;&nbsp;&nbsp;<span/>";
                         }
                     }
-                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&nbsp;&nbsp;") + span + "</p>";
+                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&nbsp;") + span + "</p>";
                 }else {
-                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&nbsp;&nbsp;") + "</p>";
+                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&nbsp;") + "</p>";
                 }
             }
             $("#var_content").JSONView(data.TraceDataBuffer);
@@ -226,9 +236,44 @@ let labour = {
                     VAR_AREA.innerHTML = "";
                 }
             });
-            FILE_AREA.addEventListener('click',labour.registerEvent.explainReset);
+            FILE_AREA.addEventListener('click',labour.registerEvent.explainStreamReset);
         },
-        explainReset:function () {
+        floodOpen:function(){
+
+        },
+        spotOpen:function(){
+            let TraceDataHash = {};
+            let data = TmpData.focusData;
+            for (let i in data.TraceDataBuffer) {
+                let tmp = data.TraceDataBuffer[i];
+                if(TraceDataHash[tmp.Line]) {
+                    TraceDataHash[tmp.Line].push(tmp);
+                    continue;
+                }
+                TraceDataHash[tmp.Line] = [tmp];
+            }
+
+            let trace_file_content = data.trace_file_content;
+            for (let line in trace_file_content){
+                LINE_AREA.innerHTML+= "<p>" + line + "</p>";
+                if(TraceDataHash[line]){
+                    let span = "&nbsp;&nbsp;&nbsp;&nbsp;";
+                    for( let i in TraceDataHash[line]){
+                        if(TraceDataHash[line][i]) {
+                            span += "<span>" + JSON.stringify(TraceDataHash[line][i]) + "&nbsp;&nbsp;&nbsp;&nbsp;<span/>";
+                        }
+                    }
+                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&nbsp;") + span + "</p>";
+                }else {
+                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&nbsp;") + "</p>";
+                }
+            }
+            $("#var_content").JSONView(data.extend);
+        },
+        errorOpen:function(){
+
+        },
+        explainStreamReset:function () {
             for (let index in FILE_AREA.childNodes){
                 if ((FILE_AREA.childNodes[index] instanceof HTMLElement) == false) {
                     continue;
