@@ -17,7 +17,7 @@ function createWindow() {
         height: 750,
         show: false,
         resizable: false,
-        frame: false
+        //frame: false
     });
 
     // and load the index.html of the app.
@@ -116,7 +116,11 @@ let socketWorker = {
         JunkManClient.on('connect', function () {
             JunkManClient.write(`{"agent":"client","status":"start"}`);
             socketWorker.palpitation = setInterval(() => {
-                JunkManClient.write(`{"agent":"client","status":"palpitation"}`);
+                if(JunkManClient) {
+                    JunkManClient.write(`{"agent":"client","status":"palpitation"}`);
+                }else {
+                    clearInterval(socketWorker.palpitation);
+                }
             }, 5000);
         });
 

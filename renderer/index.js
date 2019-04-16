@@ -193,17 +193,17 @@ let labour = {
 
             let trace_file_content = data.trace_file_content;
             for (let line in trace_file_content){
-                LINE_AREA.innerHTML+= "<p>"+line+"</p>";
+                LINE_AREA.innerHTML+= "<p>" + line + "</p>";
                 if(TraceDataHash[line]){
-                    let span = "&ensp;&ensp;";
+                    let span = "&nbsp;&nbsp;&nbsp;&nbsp;";
                     for( let i in TraceDataHash[line]){
                         if(TraceDataHash[line][i]) {
-                            span += "<span>" + JSON.stringify(TraceDataHash[line][i]) + "&ensp;&ensp;<span/>";
+                            span += "<span>" + JSON.stringify(TraceDataHash[line][i]) + "&nbsp;&nbsp;&nbsp;&nbsp;<span/>";
                         }
                     }
-                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&ensp;") + span + "</p>";
+                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&nbsp;&nbsp;") + span + "</p>";
                 }else {
-                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&ensp;") + "</p>";
+                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&nbsp;&nbsp;") + "</p>";
                 }
             }
             $("#var_content").JSONView(data.TraceDataBuffer);
@@ -226,7 +226,6 @@ let labour = {
                     VAR_AREA.innerHTML = "";
                 }
             });
-
             FILE_AREA.addEventListener('click',labour.registerEvent.explainReset);
         },
         explainReset:function () {

@@ -11,6 +11,7 @@ address,cite,code,em,th {font-weight:normal; font-style:normal;}
 hr {height: 1px;background-color: #aeaeaf;border: none;font-size: 1px;margin: 10px 0 10px}
 .scroll::-webkit-scrollbar {/*滚动条整体样式*/
     width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 5px;
 }
 .scroll::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
     border-radius: 3px;
@@ -20,7 +21,7 @@ hr {height: 1px;background-color: #aeaeaf;border: none;font-size: 1px;margin: 10
 .scroll::-webkit-scrollbar-track {/*滚动条里面轨道*/
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
     border-radius: 3px;
-    background: transparent;
+    background: white;
 }
 
 button,a {
@@ -229,7 +230,6 @@ button,a {
     text-align: right;
     width: 100%;
     background-size: cover;
-    overflow-y: auto;
     overflow-x: hidden
 }
 #detail::-webkit-scrollbar-thumb{
@@ -237,7 +237,7 @@ button,a {
 }
 #content{
     display: grid;
-    grid-template-columns: 5% auto 30%;
+    grid-template-columns: auto 25%;
     width: 100%;
     height: calc(100% - 21px);
 }
@@ -251,12 +251,18 @@ button,a {
     border-left: 1px solid #dac7c7;
 }
 
+#main_content{
+    display: grid;
+    grid-template-columns: 7% auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 #line_content{
     text-align: right;
     background: #f3f2f3;
     border-left: 1px solid #dac7c7;
     border-right: 1px solid #dac7c7;
-    overflow-x: hidden;
 }
 
 #file_content{
@@ -264,13 +270,13 @@ button,a {
     background-color: #f9f9f9;
     background-position: center center;
     background-repeat: no-repeat;
-    overflow-x: hidden;
 }
 
 #var_content{
     text-align: left;
     background: #f3f2f3;
     border-left: 1px solid #dac7c7;
+    overflow-y: scroll;
 }
 
 #line_content p{
@@ -296,7 +302,6 @@ button,a {
     overflow: hidden;
     color: #000000;
     margin: 5px 0 5px;
-    width: 100%;
 }
 
 #file_content span{
