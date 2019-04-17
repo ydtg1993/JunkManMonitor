@@ -25,22 +25,6 @@ let register = function () {
 
 let Stream = {};
 
-let DataStructure = {
-    "title": "",
-    "status": "",
-    "time": "",
-    "code": "",
-    "stream_type": "",
-    "trace_file": "",
-    "trace_file_content": {},
-    "trace_start_line": "",
-    "trace_end_line": "",
-    "trace_start_time": "",
-    "trace_end_time": "",
-    "TraceDataBuffer": [],
-    "extend": ""
-};
-
 let TmpData = {
     maximize: false,
     signal: 0,//0:disconnect 1:connecting 2:connected
@@ -49,6 +33,7 @@ let TmpData = {
     focusData:{},
 
     //lock
+    labour_lock:true,
     shrink_lock: true,
     setting_lock: true,
     form_lock:true,
@@ -102,14 +87,37 @@ let listener = function () {
             return
         }
         let data = JSON.parse(arg);
-        console.log(data);
+        while (true){
+            if(TmpData.labour_lock){
+                break;
+            }
+        }
+        let DataStructure = {
+            "title": "",
+            "status": "",
+            "time": "",
+            "code": "",
+            "stream_type": "",
+            "trace_file": "",
+            "trace_file_content": {},
+            "trace_start_line": "",
+            "trace_end_line": "",
+            "trace_start_time": "",
+            "trace_end_time": "",
+            "TraceDataBuffer": [],
+            "extend": ""
+        };
         for (let i in DataStructure) {
-            DataStructure[i] = "";
             DataStructure[i] = data[i];
         }
+        TmpData.labour_lock = false;
         labour.work(DataStructure)
     });
 };
+
+function deepClone(obj) {
+
+}
 
 let labour = {
     panel: {
@@ -171,6 +179,7 @@ let labour = {
             if(data == null){
                 return;
             }
+
             TmpData.focusData = data;
             LINE_AREA.innerHTML = "";
             FILE_AREA.innerHTML = "";
@@ -301,9 +310,9 @@ let labour = {
             html += sprintf(labour.panel.stack, DataStructure.title, DataStructure.title, 1, unit);
             catalogDom.innerHTML = html + catalogDom.innerHTML;
 
-            document.getElementsByClassName('shrink-event');
             bindClassEvent('shrink-event', 'click', labour.registerEvent.shrink);
             bindClassEvent('open-event','click',labour.registerEvent.open);
+            TmpData.labour_lock = true;
             return
         }
 
@@ -332,6 +341,7 @@ let labour = {
         }
         bindClassEvent('shrink-event', 'click', labour.registerEvent.shrink);
         bindClassEvent('open-event','click',labour.registerEvent.open);
+        TmpData.labour_lock = true;
     }
 };
 
