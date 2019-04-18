@@ -5,7 +5,7 @@ const BrowserWindow = electron.BrowserWindow;
 const IpcMain = electron.ipcMain;
 const SHELL = require('electron').shell;
 const FS = require('fs');
-const PATH=require('path');
+const PATH = require('path');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -84,7 +84,7 @@ let eventListen = function () {
         SHELL.openExternal("https://github.com/ydtg1993/JunkManMonitor");
     });
 
-    IpcMain.on('error-waring',(event, arg) => {
+    IpcMain.on('error-waring', (event, arg) => {
         electron.dialog.showMessageBox({
             title: 'warning',
             type: 'error',
@@ -116,9 +116,9 @@ let socketWorker = {
         JunkManClient.on('connect', function () {
             JunkManClient.write(`{"agent":"client","status":"start"}`);
             socketWorker.palpitation = setInterval(() => {
-                if(JunkManClient) {
+                if (JunkManClient) {
                     JunkManClient.write(`{"agent":"client","status":"palpitation"}`);
-                }else {
+                } else {
                     clearInterval(socketWorker.palpitation);
                 }
             }, 5000);
@@ -136,10 +136,11 @@ let socketWorker = {
         });
 
         JunkManClient.on('data', function (data) {
-            if(data == 'SUCCESS') {
+            if (data == 'SUCCESS') {
                 mainWindow.webContents.send('stream', 'connected');
                 return
             }
+
             packageWorker.run(data);
         });
     },
@@ -155,46 +156,73 @@ let socketWorker = {
 let packageWorker = {
     data: "",
     flag: 0,
+    buffer: null,
     run: function (data) {
-        let buffer = Buffer.from(data);
-        let message;
-
-        let startSign = buffer.lastIndexOf(2);
-        let endSign = buffer.lastIndexOf(3);
+        packageWorker.buffer = Buffer.from(data);
+        JunkManClient.pause();
+        while (true) {
+            let flag = packageWorker.slicer();
+            if (flag) {
+                break;
+            }
+        }
+        packageWorker.buffer = null;
+        JunkManClient.resume();
+    },
+    slicer: function () {
+        let startSign = packageWorker.buffer.indexOf(2);
+        let endSign = packageWorker.buffer.indexOf(3);
+        if (packageWorker.flag > 3) {
+            packageWorker.reset();
+        }
 
         if (endSign >= 0 && startSign >= 0) {
-            JunkManClient.pause();
-            message = buffer.slice(startSign + 1, endSign - startSign).toString();
-            if (isJSON(message)) {
-                mainWindow.webContents.send('stream', message)
+            if (startSign < endSign) {
+                //start...end...
+                packageWorker.reset();
+                packageWorker.data = packageWorker.buffer.slice(startSign + 1, endSign).toString();
+                if (isJSON(packageWorker.data)) {
+                    mainWindow.webContents.send('stream', packageWorker.data);
+                }
+                if (endSign < packageWorker.buffer.length - 1) {
+                    packageWorker.buffer = packageWorker.buffer.slice(endSign + 1);
+                    return false;
+                }
+                packageWorker.reset();
+                return true;
             }
-            JunkManClient.resume();
-            return
-        } else if (endSign >= 0 && startSign < 0) {
-            //end
-            message = buffer.slice(0, endSign).toString();
-            packageWorker.data += message;
-            JunkManClient.pause();
+            //end...start...
+            if(endSign === 0){
+                if (isJSON(packageWorker.data)) {
+                    mainWindow.webContents.send('stream', packageWorker.data);
+                }
+            }else if(endSign > 0) {//...end.start...
+                packageWorker.data += packageWorker.buffer.slice(0, endSign).toString();
+                if (isJSON(packageWorker.data)) {
+                    mainWindow.webContents.send('stream', packageWorker.data.toString());
+                }
+            }
+            packageWorker.reset();
+            packageWorker.buffer = packageWorker.buffer.slice(startSign);
+            return false;
+        } else if (endSign === (packageWorker.buffer.length - 1) && startSign < 0) {
+            //...end
+            packageWorker.data += packageWorker.buffer.slice(0, endSign).toString();
             if (isJSON(packageWorker.data)) {
                 mainWindow.webContents.send('stream', packageWorker.data);
-                packageWorker.reset();
-                JunkManClient.resume();
-                return
-            } else if (packageWorker.flag > 5) {
-                packageWorker.reset()
             }
-            JunkManClient.resume();
-            return
-        } else if (startSign >= 0 && endSign < 0) {
-            //start
-            message = buffer.slice(startSign + 1).toString();
-            packageWorker.data += message;
-            packageWorker.flag++;
-            return
+            packageWorker.reset();
+            return true;
+        } else if (startSign === 0 && endSign < 0) {
+            //start...
+            packageWorker.reset();
+            packageWorker.data = packageWorker.buffer.slice(startSign + 1).toString();
+            return true;
         } else {
             //ing
-            packageWorker.data += data;
+            packageWorker.data += packageWorker.buffer.toString();
             packageWorker.flag++;
+            return true;
         }
     },
     reset: function () {
@@ -213,12 +241,12 @@ function isJSON(str) {
 }
 
 function getConfigFile() {
-    let file = PATH.join(__dirname,'/resource/config.json');
+    let file = PATH.join(__dirname, '/resource/config.json');
     try {
         let data = FS.readFileSync(file, 'utf8');
         let config = JSON.parse(data);
         return config;
-    }catch (e) {
+    } catch (e) {
         console.log(e);
         return false;
     }

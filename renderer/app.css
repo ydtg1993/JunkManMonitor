@@ -158,10 +158,11 @@ button,a {
 .stack>.row-list{
     display: none;
     grid-template-columns:14% auto 20%;
-    background-color: #d02779;
+    background-color: #cb0565;
     border-radius: 3px;
     height: auto;
     margin: 0 2px 2px;
+    opacity:0.8
 }
 
 .stack>.row-list>.row-list-icon{
