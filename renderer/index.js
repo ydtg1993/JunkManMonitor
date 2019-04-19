@@ -115,10 +115,6 @@ let listener = function () {
     });
 };
 
-function deepClone(obj) {
-
-}
-
 let labour = {
     panel: {
         stack: '<div class="stack" data-name="%s" data-shrink="0">\n' +
@@ -280,7 +276,33 @@ let labour = {
             $("#var_content").JSONView(data.extend);
         },
         errorOpen:function(){
+            let TraceDataHash = {};
+            let data = TmpData.focusData;
+            for (let i in data.TraceDataBuffer) {
+                let tmp = data.TraceDataBuffer[i];
+                if(TraceDataHash[tmp.Line]) {
+                    TraceDataHash[tmp.Line].push(tmp);
+                    continue;
+                }
+                TraceDataHash[tmp.Line] = [tmp];
+            }
 
+            let trace_file_content = data.trace_file_content;
+            for (let line in trace_file_content){
+                LINE_AREA.innerHTML+= "<p>" + line + "</p>";
+                if(TraceDataHash[line]){
+                    let span = "&nbsp;&nbsp;&nbsp;&nbsp;";
+                    for( let i in TraceDataHash[line]){
+                        if(TraceDataHash[line][i]) {
+                            span += "<span>" + JSON.stringify(TraceDataHash[line][i]) + "&nbsp;&nbsp;&nbsp;&nbsp;<span/>";
+                        }
+                    }
+                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&nbsp;") + span + "</p>";
+                }else {
+                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&nbsp;") + "</p>";
+                }
+            }
+            $("#var_content").JSONView(data.extend);
         },
         explainStreamReset:function () {
             for (let index in FILE_AREA.childNodes){
