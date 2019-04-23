@@ -133,7 +133,8 @@
 .icon-develop{
     display: block;
     margin: 0 auto;
-    width: 80%;
+    width: 500px;
+    height: 100%;
     animation-play-state: running !important;
 }
 /*.icon-develop .hover {

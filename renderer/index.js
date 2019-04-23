@@ -12,7 +12,6 @@ let register = function () {
     TRACE_STREAM = "stream";
     TRACE_FLOOD  = "flood";
     TRACE_SPOT   = "spot";
-    TRACE_ERR    = "error";
 
     LINE_AREA = document.getElementById('line_content');
     FILE_AREA = document.getElementById('file_content');
@@ -29,6 +28,7 @@ let TmpData = {
     maximize: false,
     signal: 0,//0:disconnect 1:connecting 2:connected
 
+    focusRowDom:null,
     //current data
     focusData:{},
 
@@ -71,7 +71,7 @@ let SignalSvg = {
         '                <defs>\n' +
         '                    <style type="text/css"></style>\n' +
         '                </defs>\n' +
-        '                <path fill="#00ff9c" d="M954.0608 771.7888C910.7456 846.6432 855.04 904.0896 786.7392 944.128L751.8208 886.6816C806.7072 853.2992 855.04 804.2496 896.6144 739.328c41.6768-68.3008 62.464-143.1552 62.464-224.768 0-59.904-11.6736-118.272-35.0208-174.7968-21.6064-51.6096-53.248-99.0208-94.9248-142.336L826.6752 197.4272C783.36 155.7504 735.9488 124.0064 684.3392 102.4 627.712 79.0528 570.2656 67.4816 512 67.4816 453.7344 67.4816 396.288 79.0528 339.6608 102.4 288.0512 124.0064 240.64 155.7504 197.3248 197.3248c-43.3152 43.3152-75.776 90.8288-97.3824 142.336C76.5952 396.288 64.9216 454.5536 64.9216 514.4576c0 76.5952 20.7872 151.552 62.464 224.768C168.96 804.2496 217.2928 853.2992 272.2816 886.6816L237.2608 944.128C172.3392 907.4688 116.5312 850.8416 69.9392 774.2464 23.3472 696.0128 0 609.3824 0 514.4576c0-69.9392 12.4928-136.0896 37.4784-198.5536 24.9856-62.464 61.6448-117.76 109.8752-166.0928 48.3328-48.3328 103.6288-85.2992 166.0928-111.104C375.9104 12.9024 442.0608 0 512 0c69.9392 0 136.0896 12.9024 198.5536 38.7072 62.464 25.8048 117.76 62.8736 166.0928 111.104C924.9792 198.144 961.536 253.5424 986.5216 315.904 1011.5072 378.368 1024 444.6208 1024 514.4576 1024 607.8464 1000.6528 693.4528 954.0608 771.7888zM769.2288 664.3712C749.2608 701.0304 719.2576 734.3104 679.3216 764.2112L644.4032 706.7648c13.312-8.2944 25.8048-18.3296 37.4784-30.0032C693.4528 665.2928 703.488 652.8 711.7824 639.3856l2.4576 0L714.24 636.8256c19.968-34.9184 30.0032-74.0352 30.0032-117.3504 0-68.3008-23.3472-123.1872-69.9392-164.864C632.7296 309.6576 578.56 287.232 512 287.232S391.2704 309.6576 349.696 354.6112C303.0016 396.288 279.7568 451.2768 279.7568 519.4752c0 19.968 2.8672 39.6288 8.704 58.6752 5.8368 19.1488 12.9024 37.0688 21.1968 53.6576l2.4576 2.4576c18.3296 28.3648 40.7552 52.4288 67.4816 72.3968L347.136 764.2112c-19.968-13.312-37.4784-28.7744-52.4288-46.1824-14.9504-17.5104-28.2624-35.328-39.936-53.6576L254.7712 661.8112c-28.2624-39.936-42.496-88.9856-42.496-147.3536 0-86.528 29.184-157.3888 87.4496-212.2752l2.4576 0C358.8096 242.2784 428.7488 212.2752 512 212.2752c81.6128 0 152.3712 30.0032 212.2752 89.9072 58.2656 54.9888 87.4496 125.7472 87.4496 212.2752 0 56.6272-13.312 105.7792-39.936 147.3536L769.2288 664.3712zM512 601.9072c-19.968 0-40.7552-9.1136-62.464-27.4432C432.9472 557.8752 424.5504 537.9072 424.5504 514.4576c0-24.9856 8.2944-45.7728 24.9856-62.464C471.2448 433.7664 492.032 424.5504 512 424.5504c19.968 0 40.7552 9.1136 62.464 27.4432 16.6912 16.6912 24.9856 37.4784 24.9856 62.464 0 23.3472-8.2944 43.3152-24.9856 59.904C552.7552 592.7936 531.968 601.9072 512 601.9072z"\n' +
+        '                <path fill="rgb(239, 255, 0)" d="M954.0608 771.7888C910.7456 846.6432 855.04 904.0896 786.7392 944.128L751.8208 886.6816C806.7072 853.2992 855.04 804.2496 896.6144 739.328c41.6768-68.3008 62.464-143.1552 62.464-224.768 0-59.904-11.6736-118.272-35.0208-174.7968-21.6064-51.6096-53.248-99.0208-94.9248-142.336L826.6752 197.4272C783.36 155.7504 735.9488 124.0064 684.3392 102.4 627.712 79.0528 570.2656 67.4816 512 67.4816 453.7344 67.4816 396.288 79.0528 339.6608 102.4 288.0512 124.0064 240.64 155.7504 197.3248 197.3248c-43.3152 43.3152-75.776 90.8288-97.3824 142.336C76.5952 396.288 64.9216 454.5536 64.9216 514.4576c0 76.5952 20.7872 151.552 62.464 224.768C168.96 804.2496 217.2928 853.2992 272.2816 886.6816L237.2608 944.128C172.3392 907.4688 116.5312 850.8416 69.9392 774.2464 23.3472 696.0128 0 609.3824 0 514.4576c0-69.9392 12.4928-136.0896 37.4784-198.5536 24.9856-62.464 61.6448-117.76 109.8752-166.0928 48.3328-48.3328 103.6288-85.2992 166.0928-111.104C375.9104 12.9024 442.0608 0 512 0c69.9392 0 136.0896 12.9024 198.5536 38.7072 62.464 25.8048 117.76 62.8736 166.0928 111.104C924.9792 198.144 961.536 253.5424 986.5216 315.904 1011.5072 378.368 1024 444.6208 1024 514.4576 1024 607.8464 1000.6528 693.4528 954.0608 771.7888zM769.2288 664.3712C749.2608 701.0304 719.2576 734.3104 679.3216 764.2112L644.4032 706.7648c13.312-8.2944 25.8048-18.3296 37.4784-30.0032C693.4528 665.2928 703.488 652.8 711.7824 639.3856l2.4576 0L714.24 636.8256c19.968-34.9184 30.0032-74.0352 30.0032-117.3504 0-68.3008-23.3472-123.1872-69.9392-164.864C632.7296 309.6576 578.56 287.232 512 287.232S391.2704 309.6576 349.696 354.6112C303.0016 396.288 279.7568 451.2768 279.7568 519.4752c0 19.968 2.8672 39.6288 8.704 58.6752 5.8368 19.1488 12.9024 37.0688 21.1968 53.6576l2.4576 2.4576c18.3296 28.3648 40.7552 52.4288 67.4816 72.3968L347.136 764.2112c-19.968-13.312-37.4784-28.7744-52.4288-46.1824-14.9504-17.5104-28.2624-35.328-39.936-53.6576L254.7712 661.8112c-28.2624-39.936-42.496-88.9856-42.496-147.3536 0-86.528 29.184-157.3888 87.4496-212.2752l2.4576 0C358.8096 242.2784 428.7488 212.2752 512 212.2752c81.6128 0 152.3712 30.0032 212.2752 89.9072 58.2656 54.9888 87.4496 125.7472 87.4496 212.2752 0 56.6272-13.312 105.7792-39.936 147.3536L769.2288 664.3712zM512 601.9072c-19.968 0-40.7552-9.1136-62.464-27.4432C432.9472 557.8752 424.5504 537.9072 424.5504 514.4576c0-24.9856 8.2944-45.7728 24.9856-62.464C471.2448 433.7664 492.032 424.5504 512 424.5504c19.968 0 40.7552 9.1136 62.464 27.4432 16.6912 16.6912 24.9856 37.4784 24.9856 62.464 0 23.3472-8.2944 43.3152-24.9856 59.904C552.7552 592.7936 531.968 601.9072 512 601.9072z"\n' +
         '                      p-id="19815"></path></svg>'
 };
 
@@ -92,11 +92,14 @@ let listener = function () {
                 break;
             }
         }
+        TmpData.labour_lock = false;
         let DataStructure = {
             "title": "",
             "status": "",
             "time": "",
             "code": "",
+            "process":"",
+            "error":0,
             "stream_type": "",
             "trace_file": "",
             "trace_file_content": {},
@@ -110,7 +113,6 @@ let listener = function () {
         for (let i in DataStructure) {
             DataStructure[i] = data[i];
         }
-        TmpData.labour_lock = false;
         labour.work(DataStructure)
     });
 };
@@ -166,9 +168,17 @@ let labour = {
         },
         open:function () {
             let rowDom = this.parentNode;
+            TmpData.focusRowDom = rowDom;
             let stackDom = rowDom.parentNode;
             let code = rowDom.getAttribute('data-code');
             let title = stackDom.getAttribute('data-name');
+            let coverDom = $('#cover');
+
+            if(coverDom.css('display') == 'block'){
+                coverDom.css('display','none');
+                $('#content').css('display','grid');
+                $('#content-nav').css('display','block');
+            }
 
             let data = Stream[title][code];
             TmpData.focusData = {};
@@ -184,15 +194,139 @@ let labour = {
             FILE_AREA.removeEventListener('click',labour.registerEvent.explainStreamReset);
             switch (data.stream_type) {
                 case TRACE_STREAM:
+                case TRACE_FLOOD:
                     labour.registerEvent.streamOpen();
                     break;
                 case TRACE_SPOT:
                     labour.registerEvent.spotOpen();
                     break;
-                case TRACE_ERR:
-                    labour.registerEvent.errorOpen();
-                    break;
             }
+
+            let navDom = $('#content-nav');
+            navDom.find('.file').find('span').text(PATH.basename(data.trace_file));
+            navDom.find('.start_time').find('span').text(new Date(data.time * 1000).toLocaleString());
+
+            let execute_time = data.trace_end_time - data.trace_start_time;
+            execute_time = Number(execute_time.toString().match(/^\d+(?:\.\d{0,6})?/));
+            navDom.find('.status').find('span').text(execute_time + "s " +data.status);
+
+            navDom.find('.type').find('.message').text(data.stream_type);
+            if(data.error == 1){
+                navDom.find('.type').find('.error').css('display','inline');
+            }else {
+                navDom.find('.type').find('.error').css('display','none');
+            }
+        },
+        refresh:function() {
+            let rowDom = TmpData.focusRowDom;
+            let stackDom = rowDom.parentNode;
+            let code = rowDom.getAttribute('data-code');
+            let title = stackDom.getAttribute('data-name');
+
+            let data = Stream[title][code];
+            if(data == null){
+                return;
+            }
+
+            LINE_AREA.innerHTML = "";
+            FILE_AREA.innerHTML = "";
+            VAR_AREA.innerHTML = "";
+
+            let TraceDataHash = {};
+            for (let i in data.TraceDataBuffer) {
+                let tmp = data.TraceDataBuffer[i];
+                if(TraceDataHash[tmp.Line]) {
+                    TraceDataHash[tmp.Line].push(tmp);
+                    continue;
+                }
+                TraceDataHash[tmp.Line] = [tmp];
+            }
+
+            let trace_file_content = data.trace_file_content;
+            for (let line in trace_file_content){
+                LINE_AREA.innerHTML+= "<p>" + line + "</p>";
+                if(TraceDataHash[line]){
+                    let span = "&nbsp;&nbsp;&nbsp;&nbsp;";
+                    for( let i in TraceDataHash[line]){
+                        if(TraceDataHash[line][i]) {
+                            span += "<span>" + JSON.stringify(TraceDataHash[line][i]) + "&nbsp;&nbsp;&nbsp;&nbsp;<span/>";
+                        }
+                    }
+                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&nbsp;") + span + "</p>";
+                }else {
+                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&nbsp;") + "</p>";
+                }
+            }
+            //if error occur
+            if(data.error == 1){
+                let errorInfo = JSON.parse(data.extend);
+                FILE_AREA.innerHTML += "<div id='code_error'>"+
+                    "<p>error_no : "+ errorInfo.error_no +"</p>" +
+                    "<p>error_message : "+ errorInfo.error_message +"</p>" +
+                    "<p>error_file : "+ errorInfo.error_file +"</p>" +
+                    "<p>error_line : "+ errorInfo.error_line +"</p>" +
+                    "</div>";
+            }
+            //var explain
+            $("#var_content").JSONView(data.TraceDataBuffer);
+            //line explain
+            $("#file_content p").click(function () {
+                event.stopPropagation();
+                for (let index in FILE_AREA.childNodes){
+                    if ((FILE_AREA.childNodes[index] instanceof HTMLElement) == false) {
+                        continue;
+                    }
+                    let dom = FILE_AREA.childNodes[index];
+                    dom.setAttribute('style', 'background-color:transparent');
+                }
+                $(this).css('background-color','lightyellow');
+                let index = parseInt($(this).attr('data-line'));
+
+                if(TraceDataHash[index]) {
+                    $("#var_content").JSONView(TraceDataHash[index]);
+                }else {
+                    VAR_AREA.innerHTML = "";
+                }
+            });
+
+            //content nav
+            let navDom = $('#content-nav');
+
+            let execute_time = data.trace_end_time - data.trace_start_time;
+            execute_time = Number(execute_time.toString().match(/^\d+(?:\.\d{0,6})?/));
+            navDom.find('.status').find('span').text(execute_time + "s " +data.status);
+
+            navDom.find('.type').find('.message').text(data.stream_type);
+            if(data.error == 1){
+                navDom.find('.type').find('.error').css('display','inline');
+            }else {
+                navDom.find('.type').find('.error').css('display','none');
+            }
+        },
+        del:function(){
+            let rowDom = this.parentNode.parentNode;
+            let stackDom = rowDom.parentNode;
+
+            let notice = parseInt(stackDom.children[0].children[2].children[0].innerHTML);
+            notice -= 1;
+            if(notice > 99){
+                stackDom.children[0].children[2].children[0].innerHTML = "99+";
+            }else {
+                stackDom.children[0].children[2].children[0].innerHTML = notice.toString();
+            }
+            if(notice < 1){
+                stackDom.setAttribute('data-shrink', 0);
+                stackDom.children[0].children[0].children[0].setAttribute('src','resource/image/shrink.svg');
+            }
+            if(TmpData.focusData.code && TmpData.focusData.code == rowDom.getAttribute('data-code')){
+                $('#cover').css('display','block');
+                $('#content-nav').css('display','none');
+                $('#content').css('display','none');
+            }
+            rowDom.parentNode.removeChild(rowDom);
+        },
+        info:function(){
+
         },
         streamOpen:function(){
             let TraceDataHash = {};
@@ -221,6 +355,17 @@ let labour = {
                     FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&nbsp;") + "</p>";
                 }
             }
+            //if error occur
+            if(data.error == 1){
+                let errorInfo = JSON.parse(data.extend);
+                FILE_AREA.innerHTML += "<div id='code_error'>"+
+                    "<p>error_no : "+ errorInfo.error_no +"</p>" +
+                    "<p>error_message : "+ errorInfo.error_message +"</p>" +
+                    "<p>error_file : "+ errorInfo.error_file +"</p>" +
+                    "<p>error_line : "+ errorInfo.error_line +"</p>" +
+                    "</div>";
+            }
+            //var explain
             $("#var_content").JSONView(data.TraceDataBuffer);
             //line explain
             $("#file_content p").click(function () {
@@ -243,39 +388,7 @@ let labour = {
             });
             FILE_AREA.addEventListener('click',labour.registerEvent.explainStreamReset);
         },
-        floodOpen:function(){
-
-        },
         spotOpen:function(){
-            let TraceDataHash = {};
-            let data = TmpData.focusData;
-            for (let i in data.TraceDataBuffer) {
-                let tmp = data.TraceDataBuffer[i];
-                if(TraceDataHash[tmp.Line]) {
-                    TraceDataHash[tmp.Line].push(tmp);
-                    continue;
-                }
-                TraceDataHash[tmp.Line] = [tmp];
-            }
-
-            let trace_file_content = data.trace_file_content;
-            for (let line in trace_file_content){
-                LINE_AREA.innerHTML+= "<p>" + line + "</p>";
-                if(TraceDataHash[line]){
-                    let span = "&nbsp;&nbsp;&nbsp;&nbsp;";
-                    for( let i in TraceDataHash[line]){
-                        if(TraceDataHash[line][i]) {
-                            span += "<span>" + JSON.stringify(TraceDataHash[line][i]) + "&nbsp;&nbsp;&nbsp;&nbsp;<span/>";
-                        }
-                    }
-                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&nbsp;") + span + "</p>";
-                }else {
-                    FILE_AREA.innerHTML += "<p data-line='" + line + "'>" + trace_file_content[line].replace(/\s/g, "&nbsp;") + "</p>";
-                }
-            }
-            $("#var_content").JSONView(data.extend);
-        },
-        errorOpen:function(){
             let TraceDataHash = {};
             let data = TmpData.focusData;
             for (let i in data.TraceDataBuffer) {
@@ -321,6 +434,29 @@ let labour = {
             DataStructure.title = "Default";
         }
         let code = DataStructure.code;
+
+        //flood ing
+        if(DataStructure.stream_type == TRACE_FLOOD && DataStructure.process){
+            let process = DataStructure.process;
+
+            if(Stream[DataStructure.title] != null && Stream[DataStructure.title][process] != null){
+                let data = Stream[DataStructure.title][process];
+                data.error = DataStructure.error;
+                data.trace_file_content = DataStructure.trace_file_content;
+                data.status = DataStructure.status;
+                data.trace_end_line = DataStructure.trace_end_line;
+                data.trace_end_time = DataStructure.trace_end_time;
+                data.TraceDataBuffer = data.TraceDataBuffer.concat(DataStructure.TraceDataBuffer);
+                data.extend = DataStructure.extend;
+                Stream[DataStructure.title][process] = data;
+                if(TmpData.focusData && TmpData.focusData.code == process){
+                    labour.registerEvent.refresh();
+                }
+                TmpData.labour_lock = true;
+                return
+            }
+        }
+
         if (Stream[DataStructure.title] == null) {
             //first add
             let catalogDom = document.getElementById('catalog-list');
@@ -334,6 +470,8 @@ let labour = {
 
             bindClassEvent('shrink-event', 'click', labour.registerEvent.shrink);
             bindClassEvent('open-event','click',labour.registerEvent.open);
+            bindClassEvent('information-unit','click',labour.registerEvent.info);
+            bindClassEvent('delete-unit','click',labour.registerEvent.del);
             TmpData.labour_lock = true;
             return
         }
@@ -358,11 +496,17 @@ let labour = {
                     viewStyle = 'display:grid;';
                 }
                 stack.innerHTML = stack.innerHTML + sprintf(labour.panel.unit, code, viewStyle, date);
-                stack.children[0].children[2].children[0].innerHTML = notice.toString();
+                if(notice > 99){
+                    stack.children[0].children[2].children[0].innerHTML = "99+";
+                }else {
+                    stack.children[0].children[2].children[0].innerHTML = notice.toString();
+                }
             }
         }
         bindClassEvent('shrink-event', 'click', labour.registerEvent.shrink);
         bindClassEvent('open-event','click',labour.registerEvent.open);
+        bindClassEvent('information-unit','click',labour.registerEvent.info);
+        bindClassEvent('delete-unit','click',labour.registerEvent.del);
         TmpData.labour_lock = true;
     }
 };
