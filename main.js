@@ -81,7 +81,7 @@ let eventListen = function () {
     });
 
     IpcMain.on('help-event', (event, arg) => {
-        SHELL.openExternal("https://github.com/ydtg1993/JunkManMonitor");
+        SHELL.openExternal("https://github.com/ydtg1993/JunkMan");
     });
 
     IpcMain.on('error-waring', (event, arg) => {

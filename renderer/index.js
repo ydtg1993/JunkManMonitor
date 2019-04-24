@@ -52,7 +52,7 @@ function searchListener(){
                 if ((stacks[i] instanceof HTMLElement) == false) {
                     continue;
                 }
-                
+
                 if(stacks[i].getAttribute('data-name').match(value)){
                     stacks[i].setAttribute('style','display:grid');
                     continue;
@@ -215,9 +215,9 @@ let labour = {
             '            </div>',
         unit: '<div class="row-list" data-code="%s" style="%s">\n' +
             '                    <div class="row-list-icon"><img class="icon" src="resource/image/time.svg"></div>\n' +
-            '                    <div class="title open-event">%s</div>\n' +
+            '                    <div class="title">%s</div>\n' +
             '                    <div>\n' +
-            '                        <img class="icon information-unit" style="width: 15.5px" src="resource/image/information.svg">\n' +
+            '                        <img class="icon information-unit open-event" style="width: 15.5px" src="resource/image/information.svg">\n' +
             '                        <img class="icon delete-unit" src="resource/image/delete.svg">\n' +
             '                    </div>\n' +
             '                </div>'
@@ -250,7 +250,7 @@ let labour = {
             }
         },
         open:function () {
-            let rowDom = this.parentNode;
+            let rowDom = this.parentNode.parentNode;
             TmpData.focusRowDom = rowDom;
             let stackDom = rowDom.parentNode;
             let code = rowDom.getAttribute('data-code');
