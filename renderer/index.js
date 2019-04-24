@@ -39,7 +39,37 @@ let register = function () {
     listener();
     buttonRegister();
     animationRegister();
+    searchListener();
 };
+
+function searchListener(){
+    $('#search').on('input',function () {
+       let value = $(this).val();
+       let stacks = document.getElementsByClassName('stack');
+
+        if(value){
+            for (let i  in stacks) {
+                if ((stacks[i] instanceof HTMLElement) == false) {
+                    continue;
+                }
+                
+                if(stacks[i].getAttribute('data-name').match(value)){
+                    stacks[i].setAttribute('style','display:grid');
+                    continue;
+                }
+                stacks[i].setAttribute('style','display:none');
+            }
+            return;
+        }
+
+        for (let i  in stacks) {
+            if ((stacks[i] instanceof HTMLElement) == false) {
+                continue;
+            }
+            stacks[i].setAttribute('style','display:block');
+        }
+    });
+}
 
 let parseArray = {
     init:function (array) {
