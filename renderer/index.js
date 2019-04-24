@@ -408,8 +408,14 @@ let labour = {
             }
             rowDom.parentNode.removeChild(rowDom);
         },
-        info:function(){
+        clear:function () {
+            TmpData.labour_lock = false;
+            let stackDom = this.parentNode.parentNode.parentNode;
+            let title = stackDom.getAttribute('data-name');
+            Stream[title] = null;
+            stackDom.parentNode.removeChild(stackDom);
 
+            TmpData.labour_lock = true;
         },
         streamOpen:function(){
             let TraceDataHash = {};
@@ -555,6 +561,7 @@ let labour = {
             bindClassEvent('open-event','click',labour.registerEvent.open);
             bindClassEvent('information-unit','click',labour.registerEvent.info);
             bindClassEvent('delete-unit','click',labour.registerEvent.del);
+            bindClassEvent('delete-stack','click',labour.registerEvent.clear);
             TmpData.labour_lock = true;
             return
         }
@@ -590,6 +597,7 @@ let labour = {
         bindClassEvent('open-event','click',labour.registerEvent.open);
         bindClassEvent('information-unit','click',labour.registerEvent.info);
         bindClassEvent('delete-unit','click',labour.registerEvent.del);
+        bindClassEvent('delete-stack','click',labour.registerEvent.clear);
         TmpData.labour_lock = true;
     }
 };
