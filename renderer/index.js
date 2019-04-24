@@ -13,6 +13,25 @@ let register = function () {
     TRACE_FLOOD  = "flood";
     TRACE_SPOT   = "spot";
 
+    PARSER = new engine({
+        parser: {
+            debug: false,
+            locations: false,
+            extractDoc: false,
+            suppressErrors: false
+        },
+        ast: {
+            withPositions: false,
+            withSource: false
+        },
+        lexer: {
+            all_tokens: false,
+            comment_tokens: false,
+            mode_eval: false,
+            asp_tags: false,
+            short_tags: false
+        }
+    });
     LINE_AREA = document.getElementById('line_content');
     FILE_AREA = document.getElementById('file_content');
     VAR_AREA = document.getElementById('var_content');
@@ -20,6 +39,30 @@ let register = function () {
     listener();
     buttonRegister();
     animationRegister();
+};
+
+let parseArray = {
+    init:function (array) {
+        try {
+            let eval = PARSER.parseEval(array);
+            let items = eval.children[0].expression.items;
+            return parseArray.explain(items);
+        }catch (e) {
+            return array;
+        }
+    },
+    explain:function (items) {
+        let data = {};
+        for(let index in items){
+            let item = items[index];
+            if(item.value.kind == 'array'){
+                data[item.key.value] = parseArray.explain(item.value.items);
+                continue;
+            }
+            data[item.key.value] = item.value.value;
+        }
+        return data;
+    }
 };
 
 let Stream = {};
@@ -111,6 +154,16 @@ let listener = function () {
             "extend": ""
         };
         for (let i in DataStructure) {
+            if(i == "TraceDataBuffer"){
+                let traceDataBuffer = data[i];
+                for (let index in traceDataBuffer){
+                    let buffer = traceDataBuffer[index];
+                    if(buffer.Type == 'array'){
+                        traceDataBuffer[index].Value = parseArray.init(traceDataBuffer[index].Value);
+                    }
+                }
+                data[i] = traceDataBuffer;
+            }
             DataStructure[i] = data[i];
         }
         labour.work(DataStructure)
