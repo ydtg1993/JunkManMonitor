@@ -749,7 +749,7 @@ let eventHandler = {
             document.getElementById('form').setAttribute('style', 'display:none;');
         },
         resetConfigFile:function () {
-            writeConfigFile({"host":"127.0.0.1","port":"9303","IPv":4,"auto-connect":0,"palpitation":3000});
+            writeConfigFile({"host":"","port":"9303","IPv":4,"auto-connect":0,"palpitation":3000});
         }
     }
 };
