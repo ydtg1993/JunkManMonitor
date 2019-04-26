@@ -100,6 +100,7 @@ let eventListen = function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 let socketWorker = {
+    code:null,
     palpitation: null,
     connect: function () {
         let net = require('net');
@@ -136,8 +137,9 @@ let socketWorker = {
         });
 
         JunkManClient.on('data', function (data) {
-            if (data == 'SUCCESS') {
+            if (data.substr(0,7) == 'SUCCESS') {
                 mainWindow.webContents.send('stream', 'connected');
+                socketWorker.code = data.substr(8);
                 return
             }
 
@@ -147,7 +149,7 @@ let socketWorker = {
     close: function () {
         clearInterval(socketWorker.palpitation);
         if (global.JunkManClient != null) {
-            JunkManClient.end(`{"agent":"client","status":"end"}`);
+            JunkManClient.end(`{"agent":"client","status":"end","secret":"`+socketWorker.code+`"}`);
             global.JunkManClient = null;
         }
     }
