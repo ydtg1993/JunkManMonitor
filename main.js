@@ -22,7 +22,7 @@ function createWindow() {
     });
 
     global.DB = {};
-    DB.config = new Datastore(PATH.join(__dirname,'/resource/config.db'));
+    DB.config = new Datastore('./database/config.db');
     DB.config.loadDatabase();
 
     // and load the index.html of the app.

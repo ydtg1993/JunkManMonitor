@@ -6,7 +6,9 @@
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
-    "build:dir": "electron-builder --dir"
+    "build:dir": "electron-builder --dir",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
@@ -36,6 +38,9 @@
     "directories": {
       "output": "build"
     },
+    "extraFiles": [
+      "database"
+    ],
     "nsis": {
       "oneClick": false,
       "allowElevation": true,
