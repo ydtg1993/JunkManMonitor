@@ -15,10 +15,10 @@ function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
         width: 1200,
-        height: 750,
+        height: 700,
         show: false,
         resizable: false,
-        //frame: false
+        frame: false
     });
 
     global.DB = {};
