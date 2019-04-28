@@ -6,6 +6,7 @@ const IpcMain = electron.ipcMain;
 const SHELL = require('electron').shell;
 const FS = require('fs');
 const PATH = require('path');
+const Datastore = require('nedb');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -17,8 +18,12 @@ function createWindow() {
         height: 750,
         show: false,
         resizable: false,
-        frame: false
+        //frame: false
     });
+
+    global.DB = {};
+    DB.config = new Datastore(PATH.join(__dirname,'/resource/config.db'));
+    DB.config.loadDatabase();
 
     // and load the index.html of the app.
     mainWindow.loadFile('index.html');
@@ -103,47 +108,56 @@ let socketWorker = {
     code:null,
     palpitation: null,
     connect: function () {
-        let net = require('net');
-        let config = getConfigFile();
-        let HOST = config.host;
-        let PORT = config.port;
-
-        global.JunkManClient = new net.Socket();
-        JunkManClient.setKeepAlive(true);
-        JunkManClient.setEncoding("utf8");
-
-        JunkManClient.connect(PORT, HOST);
-
-        JunkManClient.on('connect', function () {
-            JunkManClient.write(`{"agent":"client","status":"start"}`);
-            socketWorker.palpitation = setInterval(() => {
-                if (JunkManClient) {
-                    JunkManClient.write(`{"agent":"client","status":"palpitation"}`);
-                } else {
-                    clearInterval(socketWorker.palpitation);
-                }
-            }, 5000);
-        });
-
-        JunkManClient.on('error', (error) => {
-            clearInterval(socketWorker.palpitation);
-            mainWindow.webContents.send('stream', 'disconnect');
-            global.JunkManClient = null;
-            electron.dialog.showMessageBox({
-                title: 'connection error',
-                type: 'error',
-                message: "Unable to connect'to the remote server. check your settings!"
-            })
-        });
-
-        JunkManClient.on('data', function (data) {
-            if (data.substr(0,7) == 'SUCCESS') {
-                mainWindow.webContents.send('stream', 'connected');
-                socketWorker.code = data.substr(8);
-                return
+        DB.config.findOne({_id:"v5NBSxSzmE3yXjj9"},function(err, doc){
+            let net = require('net');
+            if (err) {
+                electron.dialog.showMessageBox({
+                    title: 'warning',
+                    type: 'error',
+                    message: 'unexpected error! can not find data'
+                })
             }
 
-            packageWorker.run(data);
+            let HOST =doc.host;
+            let PORT = doc.port;
+
+            global.JunkManClient = new net.Socket();
+            JunkManClient.setKeepAlive(true);
+            JunkManClient.setEncoding("utf8");
+
+            JunkManClient.connect(PORT, HOST);
+
+            JunkManClient.on('connect', function () {
+                JunkManClient.write(`{"agent":"client","status":"start"}`);
+                socketWorker.palpitation = setInterval(() => {
+                    if (JunkManClient) {
+                        JunkManClient.write(`{"agent":"client","status":"palpitation"}`);
+                    } else {
+                        clearInterval(socketWorker.palpitation);
+                    }
+                }, 5000);
+            });
+
+            JunkManClient.on('error', (error) => {
+                clearInterval(socketWorker.palpitation);
+                mainWindow.webContents.send('stream', 'disconnect');
+                global.JunkManClient = null;
+                electron.dialog.showMessageBox({
+                    title: 'connection error',
+                    type: 'error',
+                    message: "Unable to connect'to the remote server. check your settings!"
+                })
+            });
+
+            JunkManClient.on('data', function (data) {
+                if (data.substr(0,7) == 'SUCCESS') {
+                    mainWindow.webContents.send('stream', 'connected');
+                    socketWorker.code = data.substr(8);
+                    return
+                }
+
+                packageWorker.run(data);
+            });
         });
     },
     close: function () {

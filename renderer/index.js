@@ -1,7 +1,6 @@
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
-const FS = require('fs');
 const {ipcRenderer} = require('electron');
 const SVG = require('svg.js');
 const PATH=require('path');
@@ -12,6 +11,8 @@ let register = function () {
     TRACE_STREAM = "stream";
     TRACE_FLOOD  = "flood";
     TRACE_SPOT   = "spot";
+
+    DB = require('electron').remote.getGlobal('DB');
 
     PARSER = new engine({
         parser: {
@@ -699,16 +700,19 @@ let eventHandler = {
                 let IPvInput = getNameDom('IPv');
                 let autoInput = getNameDom('auto-connect');
 
-                let config = getConfigFile();
-                hotsInput.value = config.host;
-                portInput.value = config.port;
+                DB.config.findOne({_id:"v5NBSxSzmE3yXjj9"},function(err, doc){
+                    if (err) ipcRenderer.send('error-waring', 'unexpected error! can not find data');
 
-                selectHelp(IPvInput,config.IPv);
-                selectHelp(autoInput,config["auto-connect"]);
+                    hotsInput.value = doc.host;
+                    portInput.value = doc.port;
 
-                document.getElementById('mongolia').setAttribute('style', 'display:block;');
-                document.getElementById('form').setAttribute('style', 'display:block;');
-                TmpData.setting_lock = true;
+                    selectHelp(IPvInput,doc.IPv);
+                    selectHelp(autoInput,doc["auto-connect"]);
+
+                    document.getElementById('mongolia').setAttribute('style', 'display:block;');
+                    document.getElementById('form').setAttribute('style', 'display:block;');
+                    TmpData.setting_lock = true;
+                });
             }
         },
         apply:function(){
@@ -719,13 +723,7 @@ let eventHandler = {
                 let IPvInput = getNameDom('IPv');
                 let autoInput = getNameDom('auto-connect');
 
-                let config = getConfigFile();
-                if(!config){
-                    eventHandler.setting.resetConfigFile();
-                    ipcRenderer.send('error-waring', 'unexpected error! reset config');
-                    TmpData.form_lock = true;
-                    return
-                }
+                let config = {};
                 config.host = hotsInput.value;
                 if(portInput.value < 0 || portInput.value > 65535){
                     ipcRenderer.send('error-waring', 'port should be > 0 and <65535');
@@ -734,9 +732,10 @@ let eventHandler = {
                 }
                 config.port = portInput.value;
                 config.IPv = parseInt(IPvInput.value);
+                config.palpitation = 3000;
                 config["auto-connect"] = parseInt(autoInput.value);
-                writeConfigFile(config);
 
+                DB.config.update({ _id: "v5NBSxSzmE3yXjj9" }, config, {}, function () {});
                 eventHandler.setting.shut();
             }
         },
@@ -747,32 +746,9 @@ let eventHandler = {
             TmpData.form_lock = true;
             document.getElementById('mongolia').setAttribute('style', 'display:none;');
             document.getElementById('form').setAttribute('style', 'display:none;');
-        },
-        resetConfigFile:function () {
-            writeConfigFile({"host":"","port":"9303","IPv":4,"auto-connect":0,"palpitation":3000});
         }
     }
 };
-
-function getConfigFile() {
-    let file = PATH.join(__dirname,'/resource/config.json');
-    try {
-        let data = FS.readFileSync(file, 'utf8');
-        let config = JSON.parse(data);
-        return config;
-    }catch (e) {
-        console.log(e);
-        return false;
-    }
-}
-
-function writeConfigFile(data) {
-    let file = PATH.join(__dirname,'/resource/config.json');
-    let str = JSON.stringify(data);
-    FS.writeFile(file, str,function(err){
-        if(err) console.log('写文件操作失败');
-    });
-}
 
 function selectHelp(Dom,value) {
     let options = Dom.options;
