@@ -33,7 +33,7 @@
   },
   "build": {
     "productName": "JunkMan",
-    "appId": "com.junkman",
+    "appId": "junkman",
     "copyright": "1.0.0",
     "directories": {
       "output": "build"
@@ -45,15 +45,15 @@
       "oneClick": false,
       "allowElevation": true,
       "allowToChangeInstallationDirectory": true,
-      "installerIcon": "./build/icons/junkman.png",
-      "uninstallerIcon": "./build/icons/junkman.png",
-      "installerHeaderIcon": "./build/icons/junkman.png",
+      "installerIcon": "./build/icons/junkman.icon",
+      "uninstallerIcon": "./build/icons/junkman.icon",
+      "installerHeaderIcon": "./build/icons/junkman.icon",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "JunkMan"
     },
     "win": {
-      "icon": "./build/icons/junkman.png",
+      "icon": "./build/icons/junkman.icon",
       "target": [
         {
           "target": "nsis",
