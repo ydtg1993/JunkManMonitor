@@ -255,15 +255,3 @@ function isJSON(str) {
         return false;
     }
 }
-
-function getConfigFile() {
-    let file = PATH.join(__dirname, '/resource/config.json');
-    try {
-        let data = FS.readFileSync(file, 'utf8');
-        let config = JSON.parse(data);
-        return config;
-    } catch (e) {
-        console.log(e);
-        return false;
-    }
-}

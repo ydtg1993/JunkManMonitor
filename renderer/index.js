@@ -191,6 +191,8 @@ let listener = function () {
                     let buffer = traceDataBuffer[index];
                     if(buffer.Type == 'array'){
                         traceDataBuffer[index].Value = parseArray.init(traceDataBuffer[index].Value);
+                    }else if(data.stream_type == TRACE_SPOT && buffer.Type == 'object'){
+                        traceDataBuffer[index].Value = JSON.parse(traceDataBuffer[index].Value);
                     }
                 }
                 data[i] = traceDataBuffer;
