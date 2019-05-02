@@ -45,15 +45,15 @@
       "oneClick": false,
       "allowElevation": true,
       "allowToChangeInstallationDirectory": true,
-      "installerIcon": "./build/icons/junkman.icon",
-      "uninstallerIcon": "./build/icons/junkman.icon",
-      "installerHeaderIcon": "./build/icons/junkman.icon",
+      "installerIcon": "./build/icons/junkman.ico",
+      "uninstallerIcon": "./build/icons/junkman.ico",
+      "installerHeaderIcon": "./build/icons/junkman.ico",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "JunkMan"
     },
     "win": {
-      "icon": "./build/icons/junkman.icon",
+      "icon": "./build/icons/junkman.ico",
       "target": [
         {
           "target": "nsis",
