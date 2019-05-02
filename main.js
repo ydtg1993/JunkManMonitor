@@ -4,8 +4,6 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const IpcMain = electron.ipcMain;
 const SHELL = require('electron').shell;
-const FS = require('fs');
-const PATH = require('path');
 const Datastore = require('nedb');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -125,7 +123,7 @@ let socketWorker = {
             JunkManClient.setKeepAlive(true);
             JunkManClient.setEncoding("utf8");
 
-            JunkManClient.connect(PORT, HOST);
+            JunkManClient.connect({port:PORT,host: HOST,family:6});
 
             JunkManClient.on('connect', function () {
                 JunkManClient.write(`{"agent":"client","status":"start"}`);

@@ -34,7 +34,7 @@
   "build": {
     "productName": "JunkMan",
     "appId": "junkman",
-    "copyright": "1.0.0",
+    "copyright": "1.0",
     "directories": {
       "output": "build"
     },
